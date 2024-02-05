@@ -12,8 +12,11 @@ function bePositive($arr) {
     //hint: may want to use var_dump() or similar to show final data types
     // mmt 2/5/2024
     foreach ($arr as $value) {
+        if (is_string($value)) {
+            $value = intval($value);
+         }
         if (is_numeric($value)) {
-            echo $value >= 0 ? $value : abs($value);
+            echo $value >= 0 ? $value : abs($value) . "<br>";
         } else {
             echo $value . "<br>";
         }
