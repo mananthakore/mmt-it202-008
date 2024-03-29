@@ -1,0 +1,22 @@
+.alert-success {
+    background-color: green
+}
+
+.alert-warning {
+    background-color: yellow;
+}
+
+.alert-danger {
+    background-color: red;
+}
+
+.alert-info {
+    background-color: teal;
+}
+nav li{display: inline; background-color: rgb(22, 22, 132);}
+nav li a{color: rgb(63, 182, 154)}
+body{
+    background-color: rgb(40, 142, 170);
+    color: rgb(115, 196, 28);
+
+}
