@@ -17,7 +17,50 @@ require(__DIR__ . "/../../partials/nav.php");
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
 
-        return true;
+        let email = form.email.value; 
+        let password = form.password.value; 
+        let isValid = true; 
+
+        function validEmail(email) { 
+            const emailRegEx = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$/;
+            return emailRegEx.test(email); 
+        }
+
+        function validUsername(username) { 
+            const usernameRegEx = /^[a-z0-9_-]{3,16}$/;
+            return usernameRegEx.test(username);
+        }
+
+
+        if(password.length < 8) { 
+            flash("[client] Password is too short", "caution"); 
+            isValid = false; 
+        }
+
+        
+        if(password === "") { 
+            flash("[client] Password cannot be empty", "caution"); 
+            isValid = false; 
+        }
+
+        if(email.includes("@")) {
+            if(!validEmail(email)) { 
+                flash("[client] Invalid email", "caution"); 
+                isValid = false; 
+            } 
+        }
+        else { 
+                if(!validUsername(email)) { 
+                    flash("[client] Invalid username", "caution"); 
+                    isValid = false;
+                }
+            }
+
+        if (email === "") { 
+            flash("[client] Email or Username cannot be empty", "caution"); 
+            isValid = false;
+        }
+        return isValid; 
     }
 </script>
 <?php

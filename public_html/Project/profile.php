@@ -126,6 +126,57 @@ $username = get_username();
         let isValid = true;
         //TODO add other client side validation....
 
+        
+        let currentPassword = form.cp.value;
+        let email = form.email.value; 
+        let username = form.username.value; 
+
+        function validEmail(email) { 
+            const emailRegex = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$/;
+            return emailRegex.test(email); 
+
+        }
+
+        function validUsername(username) { 
+            const usernameRegex = /^[a-z0-9_-]{3,16}$/;
+            return usernameRegex.test(username);
+        }
+
+        if(currentPassword !== "") { 
+            if(currentPassword.length < 8) { 
+                flash("[client] The current password is too short", "caution"); 
+                isValid = false; 
+            }
+            else { 
+                if(pw.length < 8) { 
+                    flash("[client] New password is too short", "caution");
+                    isValid = true; 
+                }
+            }
+        }
+
+        if (email === "") { 
+            flash("[client] Email cannot be empty", "caution");
+            isValid = false; 
+        }
+        else { 
+            if(!validEmail(email)) { 
+                flash("[client] Invalid email", "caution"); 
+                isValid = false; 
+            }
+        }
+
+        if (username === "") {
+            flash("[JS] Username must not be empty", "warning");
+            isValid = false;
+
+        } else {
+            if (!is_valid_username(username)) {
+                flash("[client] Invalid username", "warning");
+                isValid = false;
+            }
+        }
+
         //example of using flash via javascript
         //find the flash container, create a new element, appendChild
         if (pw !== con) {

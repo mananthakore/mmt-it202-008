@@ -13,10 +13,10 @@
 .alert-info {
     background-color: teal;
 }
-nav li{display: inline; background-color: rgb(22, 22, 132);}
+nav li{display: inline; background-color: rgb(64, 20, 176);}
 nav li a{color: rgb(63, 182, 154)}
 body{
-    background-color: rgb(40, 142, 170);
-    color: rgb(115, 196, 28);
+    background-color: rgb(96, 183, 207);
+    color: rgb(64, 20, 176);
 
 }
