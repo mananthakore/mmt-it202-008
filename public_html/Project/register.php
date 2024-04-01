@@ -26,54 +26,53 @@ reset_session();
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
 
-        var username = form.username.value; 
-        var password = form.password.value; 
-        var email = form.email.value; 
-        var confirm = form.confirm.value; 
-        var hasError = true;
+        var Email = form.email.value;
+        var Username = form.username.value;
+        var Password = form.password.value;
+        var Confirm = form.confirm.value;
+        var hasError = false;
 
+        function is_valid_username(Username) {
+            const re =/^[a-z0-9_-]{3,16}$/;
+            return re.test(Username);
+        }
         
-
-        function validEmail(email) {
-            var emailRegex = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$/;
-            return emailRegex.test(email);
-
+        function is_valid_email(Email) {
+            const re = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$/;
+            return re.test(Email);
         }
 
-        function validUsername(username) { 
-            const usernameRegex = /^[a-z0-9_-]{3,16}$/;
-            return usernameRegex.test(username); 
-        }
-        if (username === "" ) { 
-            flash("[client] Username cannot be empty", "caution");
-            hasError = true; 
-        }
-        else if(!validUsername(username)) { 
-            flash("[client] Username is invalid", "caution");
-            hasError = true;
-        }
-
-        if (email === "") { 
+        if (Email === "") {
             flash("[client] Email cannot be empty", "caution");
-            hasError = true; 
-        }
-        else if(!validEmail(email)) { 
-            flash("[client] Email is invalid", "caution");
             hasError = true;
         }
-        if(password !== confirm) { 
+        else if (!is_valid_email(Email)) {
+                flash("[client] Email is invalid", "caution");
+                hasError = true;
+            }
+        if (Username === "") {
+            flash("[client] Username cannot be empty", "caution");
+            hasError = true;
+        }
+        else if (!is_valid_username(Username)) {
+                flash("[client] Username is invalid ", "caution");
+                hasError = true;
+            }
+        if (Password === "") {
+            flash("[client] Password cannot be empty", "caution");
+            hasError = true;
+        }
+        else if (Password.length < 8) {
+                flash("[client] Password is too short", "caution");
+                hasError = true;
+        }
+        if (Password !== Confirm) {
             flash("[client] Passwords do not match", "caution");
             hasError = true;
         }
-        if (password === "" ) { 
-            flash("[client] Password cannot be empty", "caution") 
-            hasError = true;
-        }
-        else if(password.length < 8) { 
-            flash("[client] Password is too short", "caution"); 
-            hasError = true;
-        }
-        return !hasError;
+
+        return !Error;
+        //mmt48 4/1/2024
     }
 </script>
 <?php

@@ -1,4 +1,6 @@
+
 <?php
+// mmt 4/1/2024
 require(__DIR__ . "/../../partials/nav.php");
 ?>
 <form onsubmit="return validate(this)" method="POST">
@@ -14,6 +16,7 @@ require(__DIR__ . "/../../partials/nav.php");
 </form>
 <script>
     function validate(form) {
+        // mmt 4/1/2024
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
 
@@ -37,7 +40,7 @@ require(__DIR__ . "/../../partials/nav.php");
             isValid = false; 
         }
 
-        
+        // mmt 4/1/2024
         if(password === "") { 
             flash("[client] Password cannot be empty", "caution"); 
             isValid = false; 
@@ -65,6 +68,7 @@ require(__DIR__ . "/../../partials/nav.php");
 </script>
 <?php
 //TODO 2: add PHP Code
+// mmt 4/1/2024
 if (isset($_POST["email"]) && isset($_POST["password"])) {
     $email = se($_POST, "email", "", false);
     $password = se($_POST, "password", "", false);
@@ -89,6 +93,7 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
             $hasError = true;
         }
     }
+    // mmt 4/1/2024
     if (empty($password)) {
         flash("password must not be empty");
         $hasError = true;

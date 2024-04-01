@@ -28,6 +28,9 @@ if (isset($_POST["save"])) {
         } catch (PDOException $e) {
             users_check_duplicate($e->errorInfo);
         }
+        catch (Exception $e) {
+            flash("An unexpected error occurred, please try again", "danger");
+        }
         //select fresh data from table
         $stmt = $db->prepare("SELECT id, email, username from Users where id = :id LIMIT 1");
         try {
@@ -81,6 +84,9 @@ if (isset($_POST["save"])) {
                 } catch (PDOException $e) {
                     echo "<pre>" . var_export($e->errorInfo, true) . "</pre>";
                 }
+                catch (Exception $e) {
+                    flash("An unexpected error occurred, please try again", "caution");
+                }
             } else {
                 flash("New passwords don't match", "warning");
             }
@@ -120,64 +126,60 @@ $username = get_username();
 </form>
 
 <script>
+
     function validate(form) {
+       
         let pw = form.newPassword.value;
         let con = form.confirmPassword.value;
         let isValid = true;
         //TODO add other client side validation....
+        let Email = form.email.value;
+        let Username = form.username.value;
+        let CurrentPassword = form.cp.value;
 
+        function is_valid_username(Username) {
+            const usernameRegex =/^[a-z0-9_-]{3,16}$/;
+            return usernameRegex.test(Username);
+        }
         
-        let currentPassword = form.cp.value;
-        let email = form.email.value; 
-        let username = form.username.value; 
-
-        function validEmail(email) { 
+        function is_valid_email(Email) {
             const emailRegex = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$/;
-            return emailRegex.test(email); 
-
+            return emailRegex.test(Email);
         }
 
-        function validUsername(username) { 
-            const usernameRegex = /^[a-z0-9_-]{3,16}$/;
-            return usernameRegex.test(username);
-        }
-
-        if(currentPassword !== "") { 
-            if(currentPassword.length < 8) { 
-                flash("[client] The current password is too short", "caution"); 
-                isValid = false; 
-            }
-            else { 
-                if(pw.length < 8) { 
-                    flash("[client] New password is too short", "caution");
-                    isValid = true; 
-                }
-            }
-        }
-
-        if (email === "") { 
+        if (Email === "") {
             flash("[client] Email cannot be empty", "caution");
-            isValid = false; 
+            isValid = false;
         }
-        else { 
-            if(!validEmail(email)) { 
-                flash("[client] Invalid email", "caution"); 
-                isValid = false; 
+        else {
+            if (!is_valid_email(Email)) {
+                flash("[client] Email is invalid", "caution");
+                isValid = false;
             }
         }
-
-        if (username === "") {
-            flash("[JS] Username must not be empty", "warning");
+        if (Username === "") {
+            flash("[client] Username cannot be empty", "caution");
             isValid = false;
-
-        } else {
-            if (!is_valid_username(username)) {
-                flash("[client] Invalid username", "warning");
+        }
+        else {
+            if (!is_valid_username(Username)) {
+                flash("[client] Username is invalid", "caution");
                 isValid = false;
             }
         }
 
-        //example of using flash via javascript
+        if (CurrentPassword !== "") {
+            if (CurrentPassword.length < 8) {
+                flash("[client] Current Password is too short", "caution");
+                isValid = false;
+            }
+            else {
+                if (pw.length < 8) {
+                    flash("[client] New Password is too short", "caution");
+                    isValid = false;
+                }
+            }
+        } 
         //find the flash container, create a new element, appendChild
         if (pw !== con) {
             flash("Password and Confrim password must match", "warning");

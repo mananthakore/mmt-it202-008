@@ -13,4 +13,5 @@ function flash(message = "", color = "info") {
     outerDiv.appendChild(innerDiv);
     //add the element to the DOM (if we don't it merely exists in memory)
     flash.appendChild(outerDiv);
+
 }
