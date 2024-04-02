@@ -1,5 +1,6 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php");
+// mmt 4/1/2024
 reset_session();
 ?>
 <form onsubmit="return validate(this)" method="POST">
@@ -25,6 +26,7 @@ reset_session();
     function validate(form) {
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
+        // mmt 4/1/2024
 
         var Email = form.email.value;
         var Username = form.username.value;
@@ -32,21 +34,21 @@ reset_session();
         var Confirm = form.confirm.value;
         var hasError = false;
 
-        function is_valid_username(Username) {
-            const re =/^[a-z0-9_-]{3,16}$/;
-            return re.test(Username);
+        function validUsername(Username) {
+            const usernameRegex =/^[a-z0-9_-]{3,16}$/;
+            return usernameRegex.test(Username);
         }
         
-        function is_valid_email(Email) {
-            const re = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$/;
-            return re.test(Email);
+        function validEmail(Email) {
+            const emailRegex = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$/;
+            return emailRegex.test(Email);
         }
 
         if (Email === "") {
             flash("[client] Email cannot be empty", "caution");
             hasError = true;
         }
-        else if (!is_valid_email(Email)) {
+        else if (!validEmail(Email)) {
                 flash("[client] Email is invalid", "caution");
                 hasError = true;
             }
@@ -54,7 +56,7 @@ reset_session();
             flash("[client] Username cannot be empty", "caution");
             hasError = true;
         }
-        else if (!is_valid_username(Username)) {
+        else if (!validUsername(Username)) {
                 flash("[client] Username is invalid ", "caution");
                 hasError = true;
             }
@@ -72,7 +74,7 @@ reset_session();
         }
 
         return !hasError;
-        //mmt48 4/1/2024
+        //mmt 4/1/2024
     }
 </script>
 <?php
@@ -85,6 +87,7 @@ if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm
         "confirm",
         "",
         false
+        // mmt 4/1/2024
     );
     $username = se($_POST, "username", "", false);
     //TODO 3
@@ -101,7 +104,7 @@ if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm
         $hasError = true;
     }
     if (!preg_match('/^[a-z0-9_-]{3,16}$/', $username)) {
-        flash("Username must only contain 3-30 characters a-z, 0-9, _, or -", "danger");
+        flash("Username must only contain 3-30 characters a-z, 0-9, _, or -", "danger"); // mmt 4/1/2024
         $hasError = true;
     }
     if (empty($password)) {
@@ -123,7 +126,7 @@ if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm
         $hasError = true;
     }
     if (!$hasError) {
-        //TODO 4
+        //TODO 4 mmt 4/1/2024
         $hash = password_hash($password, PASSWORD_BCRYPT);
         $db = getDB();
         $stmt = $db->prepare("INSERT INTO Users (email, password, username) VALUES(:email, :password, :username)");

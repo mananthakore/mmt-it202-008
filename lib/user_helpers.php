@@ -3,6 +3,7 @@
 /**
  * Passing $redirect as true will auto redirect a logged out user to the $destination.
  * The destination defaults to login.php
+ * mmt 4/1/2024
  */
 function is_logged_in($redirect = false, $destination = "login.php")
 {
@@ -14,7 +15,7 @@ function is_logged_in($redirect = false, $destination = "login.php")
     }
     return $isLoggedIn;
 }
-function has_role($role)
+function has_role($role) // mmt 4/1/2024
 {
     if (is_logged_in() && isset($_SESSION["user"]["roles"])) {
         foreach ($_SESSION["user"]["roles"] as $r) {
