@@ -71,7 +71,7 @@ reset_session();
             hasError = true;
         }
 
-        return !Error;
+        return !hasError;
         //mmt48 4/1/2024
     }
 </script>
