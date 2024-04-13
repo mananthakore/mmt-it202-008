@@ -10,8 +10,6 @@ if (!has_role("Admin")) {
 }
 
 
-
-
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Fetch team information from form submission
     $name = $_POST["name"] ?? "";
