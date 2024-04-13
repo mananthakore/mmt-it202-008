@@ -25,4 +25,8 @@ require(__DIR__ . "/get_url.php");
 
 
 require(__DIR__ . "/render_functions.php");
+
+require(__DIR__ . "/load_api_keys.php");
+
+require(__DIR__ . "/api_helper.php");
 ?>
