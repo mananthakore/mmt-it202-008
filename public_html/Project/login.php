@@ -1,74 +1,63 @@
-
 <?php
-// mmt 4/1/2024
-require(__DIR__ . "/../../partials/nav.php");
+require_once(__DIR__ . "/../../partials/nav.php");
 ?>
-<form onsubmit="return validate(this)" method="POST">
-    <div>
-        <label for="email">Email/Username</label>
-        <input type="text" name="email" required />
-    </div>
-    <div>
-        <label for="pw">Password</label>
-        <input type="password" id="pw" name="password" required minlength="8" />
-    </div>
-    <input type="submit" value="Login" />
-</form>
+<div class="container-fluid">
+    <form onsubmit="return validate(this)" method="POST">
+        <?php render_input(["type" => "text", "id" => "email", "name" => "email", "label" => "Email/Username", "rules" => ["required" => true]]); ?>
+        <?php render_input(["type" => "password", "id" => "password", "name" => "password", "label" => "Password", "rules" => ["required" => true, "minlength" => 8]]); ?>
+        <?php render_button(["text" => "Login", "type" => "submit"]); ?>
+    </form>
+</div>
 <script>
     function validate(form) {
         // mmt 4/1/2024
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
+        let email = form.email.value;
+        let password = form.password.value;
+        let isValid = true;
 
-        let email = form.email.value; 
-        let password = form.password.value; 
-        let isValid = true; 
-
-        function validEmail(email) { 
+        function validEmail(email) {
             const emailRegEx = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$/;
-            return emailRegEx.test(email); 
+            return emailRegEx.test(email);
         }
 
-        function validUsername(username) { 
+        function validUsername(username) {
             const usernameRegEx = /^[a-z0-9_-]{3,16}$/;
             return usernameRegEx.test(username);
         }
-
-
-        if(password.length < 8) { 
-            flash("[client] Password is too short", "caution"); 
-            isValid = false; 
+        if(password.length < 8) {
+            flash("[client] Password is too short", "caution");
+            isValid = false;
         }
-
         // mmt 4/1/2024
-        if(password === "") { 
-            flash("[client] Password cannot be empty", "caution"); 
-            isValid = false; 
+        if(password === "") {
+            flash("[client] Password cannot be empty", "caution");
+            isValid = false;
         }
 
         if(email.includes("@")) {
-            if(!validEmail(email)) { 
-                flash("[client] Invalid email", "caution"); 
-                isValid = false; 
-            } 
+            if(!validEmail(email)) {
+                flash("[client] Invalid email", "caution");
+                isValid = false;
+            }
         }
-        else { 
-                if(!validUsername(email)) { 
-                    flash("[client] Invalid username", "caution"); 
+        else {
+                if(!validUsername(email)) {
+                    flash("[client] Invalid username", "caution");
                     isValid = false;
                 }
             }
-
-        if (email === "") { 
-            flash("[client] Email or Username cannot be empty", "caution"); 
+        if (email === "") {
+            flash("[client] Email or Username cannot be empty", "caution");
             isValid = false;
         }
-        return isValid; 
+        return isValid;
     }
+    
 </script>
 <?php
 //TODO 2: add PHP Code
-// mmt 4/1/2024
 if (isset($_POST["email"]) && isset($_POST["password"])) {
     $email = se($_POST, "email", "", false);
     $password = se($_POST, "password", "", false);
@@ -76,7 +65,7 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
     //TODO 3
     $hasError = false;
     if (empty($email)) {
-        flash("Email must not be empty");
+        flash("Email must be provided <br>");
         $hasError = true;
     }
     if (str_contains($email, "@")) {
@@ -93,21 +82,18 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
             $hasError = true;
         }
     }
-    // mmt 4/1/2024
     if (empty($password)) {
-        flash("password must not be empty");
+        flash("Password must be provided <br>");
         $hasError = true;
     }
     if (!is_valid_password($password)) {
-        flash("Password too short");
+        flash("Password must be at least 8 characters long <br>");
         $hasError = true;
     }
     if (!$hasError) {
-        //flash("Welcome, $email");
         //TODO 4
         $db = getDB();
-        $stmt = $db->prepare("SELECT id, email, username, password from Users 
-        where email = :email or username = :email");
+        $stmt = $db->prepare("SELECT id, email, username, password from Users where email = :email or username = :email");
         try {
             $r = $stmt->execute([":email" => $email]);
             if ($r) {
@@ -116,7 +102,6 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                     $hash = $user["password"];
                     unset($user["password"]);
                     if (password_verify($password, $hash)) {
-                        //flash("Weclome $email");
                         $_SESSION["user"] = $user;
                         try {
                             //lookup potential roles
@@ -133,7 +118,7 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                             $_SESSION["user"]["roles"] = $roles; //at least 1 role
                         } else {
                             $_SESSION["user"]["roles"] = []; //no roles
-                        } //sets our session data from db
+                        }
                         flash("Welcome, " . get_username());
                         die(header("Location: home.php"));
                     } else {
@@ -149,5 +134,4 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
     }
 }
 ?>
-<?php 
-require(__DIR__."/../../partials/flash.php");
+<?php require_once(__DIR__ . "/../../partials/flash.php");
