@@ -80,12 +80,53 @@ if($team){
     <div>
         <a href="<?php echo get_url("admin/list_teams.php"); ?>" class="btn btn-secondary">Back</a>
     </div>
-    <form method="POST">
+    <form id = "teamForm" method="POST">
         <?php foreach($form as $field) : ?>
             <?php render_input($field); ?>
         <?php endforeach; ?>
         <?php render_button(["text" => "Update", "type" => "submit"]); ?>
     </form>
 </div>
+
+<script>
+    function validate(form) {
+        const teamInput = form.querySelector("#name");
+        const nicknameInput = form.querySelector("#nickname");
+        const cityInput = form.querySelector("#city");
+        const logoInput = form.querySelector("#logo");
+
+        let isValid = true;
+
+        if (!teamInput.value.trim()) {
+            flash("Team is required", "warning");
+            isValid = false;
+        } 
+        if (!nicknameInput.value.trim()) {
+            flash("Nickname is required", "warning");
+            isValid = false;
+        } 
+
+        if (!cityInput.value.trim()) {
+            flash("City is required", "warning");
+            isValid = false;
+        }
+
+        if (!logoInput.value.trim()) {
+            flash("Logo is required", "warning");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("teamForm");
+
+        form.addEventListener("submit", function (event) {
+            if (!validate(form)) {
+                event.preventDefault(); // Prevent form submission
+            }
+        });
+    });
+</script>
 
 <?php require_once(__DIR__ . "/../../../partials/flash.php"); ?>
