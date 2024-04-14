@@ -92,6 +92,7 @@ $table = [
     // Add edit and delete URLs if needed
     "edit_url" => get_url("admin/edit_teams.php"),
     "delete_url" => get_url("admin/delete_teams.php"),
+    "view_url" => get_url("admin/view_team.php")
 ];
 ?>
 <div class="container-fluid">
