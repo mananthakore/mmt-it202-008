@@ -91,7 +91,7 @@ $table = [
     "ignored_columns" => ["id"],
     // Add edit and delete URLs if needed
     // "edit_url" => get_url("admin/edit_team.php"),
-    // "delete_url" => get_url("admin/delete_team.php"),
+    "delete_url" => get_url("admin/delete_team.php"),
 ];
 ?>
 <div class="container-fluid">
