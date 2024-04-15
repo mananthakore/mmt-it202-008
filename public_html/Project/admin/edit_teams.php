@@ -8,40 +8,61 @@ if(!has_role("Admin")){
 
 $id = se($_GET, "id", -1, false);
 
-if(isset($_POST["name"])){
-    foreach($_POST as $k=>$v){
-        if(!in_array($k,["name", "nickname", "city", "logo" ] )){
-            unset($_POST[$k]);
+if (isset($_POST["car"])) {
+    $team = se($_POST, "team", "", false);
+    $nickname = se($_POST, "nickname", "", false);
+    $city = se($_POST, "", "city", false);
+    $logo = se($_POST, "logo", "", false);
+
+    $errors = false;
+
+    // Server-side validation
+    if (empty($team)) {
+        flash("[server] Team is required", "warning");
+        $errors = true;
+    } 
+
+    if (empty($nickname)) {
+        flash("[server] Nickname is required", "warning");
+        $errors = true;
+    } 
+
+    if (empty($city)) {
+        flash("[server] City is required", "warning");
+        $errors = true;
+    }
+
+    if (empty($logo)) {
+        flash("[server] Logo URL is required", "warning");
+        $errors = true;
+    }
+    if (!$errors) {
+        // All fields are valid, proceed with updating the car's information
+        $db = getDB();
+        $query = "UPDATE `NBA_Teams` SET ";
+        $params = [];
+
+        foreach ($_POST as $k => $v) {
+            if ($params) {
+                $query .= ",";
+            }
+            $query .= "$k=:$k";
+            $params[":$k"] = $v;
         }
-        $info=$_POST;
-    }
-    //Insert Data
-    $db=getDB();
-    $query="UPDATE `NBA_Teams` SET ";
 
-    $params=[];
-    foreach($info as $k => $v) {
-        if($params){
-            $query .= ",";
+        $query .= " WHERE id=:id";
+        $params[":id"] = $id;
+
+        try {
+            $stmt = $db->prepare($query);
+            $stmt->execute($params);
+            flash("Updated record", "success");
+        } catch (PDOException $e) {
+            error_log("Something broke with the query" . var_export($e, true));
         }
-        //be sure $k is trusted as this is a source of sql injection
-        $query .= "$k=:$k";
-        $params[":$k"] = $v;   
-    }
-
-    $query .= " WHERE id=:id";
-    $params[":id"]=$id;
-
-    try{
-        $stmt=$db->prepare($query);
-        $stmt->execute($params);
-        flash("Updated record", "success");
-    }
-    catch(PDOException $e){
-        error_log("Something broke with the query" . var_export($e, true));
-        flash("Error updating record", "danger");
     }
 }
+
 
 $team = [];
 if($id > -1){

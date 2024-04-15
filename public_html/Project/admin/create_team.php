@@ -9,52 +9,62 @@ if (!has_role("Admin")) {
 }
 
 // Initialize an array to store validation errors
-$errors = [];
 
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submit'])) {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+    $name = se($_POST, "name", "", false);
+    $nickname = se($_POST, "nickname", "", false);
+    $city = se($_POST, "city", "", false);
+    $logo = se($_POST, "logo", "", false);
+    
+    $error = false;
     // Fetch team information from form submission
-    $name = $_POST["name"] ?? "";
-    $nickname = $_POST["nickname"] ?? "";
-    $city = $_POST["city"] ?? "";
-    $logo = $_POST["logo"] ?? "";
 
     // Validate input
     if (empty($name)) {
-        $errors['name'] = "Team name is required";
-    }
+        flash("[server] Team name is required", "warning");
+        $error = true;
 
     if (empty($nickname)) {
-        $errors['nickname'] = "Team nickname is required";
+        flash("[server] Team nickname is required", "warning");
+        $error = true;
     }
 
     if (empty($city)) {
-        $errors['city'] = "Team city is required";
+        flash("[server] Team city is required", "warning");
+        $error = true;
     }
 
     if (empty($logo)) {
-        $errors['logo'] = "Team logo URL is required";
+        flash("[server] Team logo URL is required", "warning");
+        $error = true;
     }
 
     // If there are no errors and the form was submitted, proceed to insert into the database
-    if (empty($errors)) {
-        // Insert team information into the database
-        $sql = "INSERT INTO NBA_Teams (name, nickname, city, logo) VALUES (:name, :nickname, :city, :logo)";
+    if(!$errors) { 
         $db = getDB();
-        $stmt = $db->prepare($sql);
-        $stmt->bindValue(":name", $name);
-        $stmt->bindValue(":nickname", $nickname);
-        $stmt->bindValue(":city", $city);
-        $stmt->bindValue(":logo", $logo);
-
-        if ($stmt->execute()) {
-            flash("Team added successfully", "success");
-            // Redirect to a different page after successful submission
-            header("Location: $BASE_PATH" . "/home.php");
-            exit; // Make sure to exit after redirection
-        } else {
-            flash("An error occurred while adding team", "danger");
+        $query = "INSERT INTO NBA_Teams (name, nickname, city, logo) VALUES (:name, :nickname, :city, :logo)";
+        try { 
+            $stmt = $db->prepare($query);
+            $stmt->execute([
+                ":name" => $name, 
+                ":nickname" => $nickname, 
+                ":city" => $city, 
+                ":logo" => $logo
+        ]);
+        flash("Team added successfuly", "success"); 
+    } catch(PDOException $e) { 
+        if($e->errorInfo[1] === 1062) { 
+            flash("A team with this info already exists", "warning");
         }
+        else { 
+            flash("An unexpected error occurred", "danger");
+            error_log("Database error: " . $e->getMessage());
+        }
+    }       
+
     }
+}
 }
 ?>
 
