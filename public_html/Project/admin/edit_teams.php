@@ -11,7 +11,7 @@ $id = se($_GET, "id", -1, false);
 if (isset($_POST["team"])) {
     $team = se($_POST, "team", "", false);
     $nickname = se($_POST, "nickname", "", false);
-    $city = se($_POST, "", "city", false);
+    $city = se($_POST, "city", "", false);
     $logo = se($_POST, "logo", "", false);
 
     $errors = false;
