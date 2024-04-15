@@ -8,7 +8,7 @@ if(!has_role("Admin")){
 
 $id = se($_GET, "id", -1, false);
 
-if (isset($_POST["car"])) {
+if (isset($_POST["team"])) {
     $team = se($_POST, "team", "", false);
     $nickname = se($_POST, "nickname", "", false);
     $city = se($_POST, "", "city", false);
@@ -37,7 +37,7 @@ if (isset($_POST["car"])) {
         $errors = true;
     }
     if (!$errors) {
-        // All fields are valid, proceed with updating the car's information
+
         $db = getDB();
         $query = "UPDATE `NBA_Teams` SET ";
         $params = [];
@@ -101,7 +101,7 @@ if($team){
     <div>
         <a href="<?php echo get_url("admin/list_teams.php"); ?>" class="btn btn-secondary">Back</a>
     </div>
-    <form id = "teamForm" method="POST">
+    <form id = "form" method="POST">
         <?php foreach($form as $field) : ?>
             <?php render_input($field); ?>
         <?php endforeach; ?>
@@ -110,6 +110,7 @@ if($team){
 </div>
 
 <script>
+    
     function validate(form) {
         const teamInput = form.querySelector("#name");
         const nicknameInput = form.querySelector("#nickname");
@@ -140,7 +141,7 @@ if($team){
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-        const form = document.getElementById("teamForm");
+        const form = document.getElementById("form");
 
         form.addEventListener("submit", function (event) {
             if (!validate(form)) {
@@ -148,6 +149,7 @@ if($team){
             }
         });
     });
+    
 </script>
 
 <?php require_once(__DIR__ . "/../../../partials/flash.php"); ?>
