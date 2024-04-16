@@ -24,6 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (empty($name)) {
         flash("[server] Team name is required", "warning");
         $error = true;
+    }
 
     if (empty($nickname)) {
         flash("[server] Team nickname is required", "warning");
@@ -41,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     // If there are no errors and the form was submitted, proceed to insert into the database
-    if(!$errors) { 
+    if(!$error) { 
         $db = getDB();
         $query = "INSERT INTO NBA_Teams (name, nickname, city, logo) VALUES (:name, :nickname, :city, :logo)";
         try { 
@@ -65,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     }
 }
-}
+
 ?>
 
 
@@ -75,30 +76,30 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <form method = "POST" onsubmit = "return validate(this);" >
         <div class="form-group">
             <label for="name">Name</label>
-            <input type="text" class="form-control <?php if (isset($errors['name'])) echo 'is-invalid'; ?>" id="name" name="name" placeholder="Enter team name" required>
-            <?php if (isset($errors['name'])) : ?>
-                <div class="invalid-feedback"><?php echo $errors['name']; ?></div>
+            <input type="text" class="form-control <?php if (isset($error['name'])) echo 'is-invalid'; ?>" id="name" name="name" placeholder="Enter team name" required>
+            <?php if (isset($error['name'])) : ?>
+                <div class="invalid-feedback"><?php echo $error['name']; ?></div>
             <?php endif; ?>
         </div>
         <div class="form-group">
             <label for="nickname">Nickname</label>
-            <input type="text" class="form-control <?php if (isset($errors['nickname'])) echo 'is-invalid'; ?>" id="nickname" name="nickname" placeholder="Enter team nickname" required>
-            <?php if (isset($errors['nickname'])) : ?>
-                <div class="invalid-feedback"><?php echo $errors['nickname']; ?></div>
+            <input type="text" class="form-control <?php if (isset($error['nickname'])) echo 'is-invalid'; ?>" id="nickname" name="nickname" placeholder="Enter team nickname" required>
+            <?php if (isset($error['nickname'])) : ?>
+                <div class="invalid-feedback"><?php echo $error['nickname']; ?></div>
             <?php endif; ?>
         </div>
         <div class="form-group">
             <label for="city">City</label>
-            <input type="text" class="form-control <?php if (isset($errors['city'])) echo 'is-invalid'; ?>" id="city" name="city" placeholder="Enter team city" required>
-            <?php if (isset($errors['city'])) : ?>
-                <div class="invalid-feedback"><?php echo $errors['city']; ?></div>
+            <input type="text" class="form-control <?php if (isset($error['city'])) echo 'is-invalid'; ?>" id="city" name="city" placeholder="Enter team city" required>
+            <?php if (isset($error['city'])) : ?>
+                <div class="invalid-feedback"><?php echo $error['city']; ?></div>
             <?php endif; ?>
         </div>
         <div class="form-group">
             <label for="logo">Logo</label>
-            <input type="text" class="form-control <?php if (isset($errors['logo'])) echo 'is-invalid'; ?>" id="logo" name="logo" placeholder="Enter team logo URL" required>
-            <?php if (isset($errors['logo'])) : ?>
-                <div class="invalid-feedback"><?php echo $errors['logo']; ?></div>
+            <input type="text" class="form-control <?php if (isset($error['logo'])) echo 'is-invalid'; ?>" id="logo" name="logo" placeholder="Enter team logo URL" required>
+            <?php if (isset($error['logo'])) : ?>
+                <div class="invalid-feedback"><?php echo $error['logo']; ?></div>
             <?php endif; ?>
         </div>
         <button type="submit" class="btn btn-primary">Add Team</button>

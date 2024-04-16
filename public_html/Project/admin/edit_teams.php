@@ -8,8 +8,8 @@ if(!has_role("Admin")){
 
 $id = se($_GET, "id", -1, false);
 
-if (isset($_POST["team"])) {
-    $team = se($_POST, "team", "", false);
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $name = se($_POST, "name", "", false);
     $nickname = se($_POST, "nickname", "", false);
     $city = se($_POST, "city", "", false);
     $logo = se($_POST, "logo", "", false);
@@ -17,7 +17,7 @@ if (isset($_POST["team"])) {
     $errors = false;
 
     // Server-side validation
-    if (empty($team)) {
+    if (empty($name)) {
         flash("[server] Team is required", "warning");
         $errors = true;
     } 
@@ -36,6 +36,7 @@ if (isset($_POST["team"])) {
         flash("[server] Logo URL is required", "warning");
         $errors = true;
     }
+    
     if (!$errors) {
 
         $db = getDB();
@@ -57,7 +58,8 @@ if (isset($_POST["team"])) {
             $stmt = $db->prepare($query);
             $stmt->execute($params);
             flash("Updated record", "success");
-        } catch (PDOException $e) {
+        } 
+        catch (PDOException $e) {
             error_log("Something broke with the query" . var_export($e, true));
         }
     }

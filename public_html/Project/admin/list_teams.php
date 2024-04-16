@@ -12,6 +12,7 @@ $form = [
     ["type" => "text", "name" => "city", "placeholder" => "City", "label" => "City", "include_margin" => false],
     ["type" => "text", "name" => "nickname", "placeholder" => "Nickname", "label" => "Nickname", "include_margin" => false],
     ["type" => "text", "name" => "logo", "placeholder" => "Logo (Link)", "label" => "Logo (Link)", "include_margin" => false],
+    ["type" => "number", "name" => "limit", "label" => "Limit", "value" => "10", "include_margin" => false]
 ];
 
 $query = "SELECT id, name, city, nickname, logo FROM `NBA_Teams` WHERE 1=1";
@@ -68,6 +69,14 @@ if (count($_GET) > 0) {
     if (!empty($logo)) {
         $query .= " AND logo LIKE :logo";
         $params[":logo"] = "%$logo%";
+    }
+    try {
+        $limit = (int)se($_GET, "limit", "10", false);
+    } catch (Exception $e) {
+        $limit = 10;
+    }
+    if ($limit < 1 || $limit > 100) {
+        $limit = 10;
     }
 }
 
