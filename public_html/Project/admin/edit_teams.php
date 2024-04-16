@@ -101,7 +101,7 @@ if($team){
     <div>
         <a href="<?php echo get_url("admin/list_teams.php"); ?>" class="btn btn-secondary">Back</a>
     </div>
-    <form id = "form" method="POST">
+    <form method = "POST" onsubmit = "return validate(this);" >
         <?php foreach($form as $field) : ?>
             <?php render_input($field); ?>
         <?php endforeach; ?>
@@ -110,46 +110,34 @@ if($team){
 </div>
 
 <script>
-    
     function validate(form) {
-        const teamInput = form.querySelector("#name");
-        const nicknameInput = form.querySelector("#nickname");
-        const cityInput = form.querySelector("#city");
-        const logoInput = form.querySelector("#logo");
+        const teamInput = form.name.value;
+        const nicknameInput = form.nickname.value;
+        const cityInput = form.city.value;
+        const logoInput = form.logo.value;
 
         let isValid = true;
 
-        if (!teamInput.value.trim()) {
-            flash("Team is required", "warning");
+        if (!teamInput) {
+            flash("[js] Team name is required", "warning");
             isValid = false;
-        } 
-        if (!nicknameInput.value.trim()) {
-            flash("Nickname is required", "warning");
-            isValid = false;
-        } 
-
-        if (!cityInput.value.trim()) {
-            flash("City is required", "warning");
+        }
+        if (!nicknameInput) {
+            flash("[js] Team nickname is required", "warning");
             isValid = false;
         }
 
-        if (!logoInput.value.trim()) {
-            flash("Logo is required", "warning");
+        if (!cityInput) {
+            flash("[js] Team city is required", "warning");
+            isValid = false;
+        }
+
+        if (!logoInput) {
+            flash("[js] Team logo URL is required", "warning");
             isValid = false;
         }
         return isValid;
     }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const form = document.getElementById("form");
-
-        form.addEventListener("submit", function (event) {
-            if (!validate(form)) {
-                event.preventDefault(); // Prevent form submission
-            }
-        });
-    });
-    
 </script>
 
 <?php require_once(__DIR__ . "/../../../partials/flash.php"); ?>
