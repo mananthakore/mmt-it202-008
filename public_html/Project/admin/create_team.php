@@ -69,9 +69,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 ?>
 
 
+
 <div class="container-fluid">
     <h3>Add NBA Team</h3>
-    <form id="teamForm" method="POST">
+    <form method = "POST" onsubmit = "return validate(this);" >
         <div class="form-group">
             <label for="name">Name</label>
             <input type="text" class="form-control <?php if (isset($errors['name'])) echo 'is-invalid'; ?>" id="name" name="name" placeholder="Enter team name" required>
@@ -103,46 +104,34 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <button type="submit" class="btn btn-primary">Add Team</button>
     </form>
 </div>
-
-
 <script>
     function validate(form) {
-        const teamInput = form.querySelector("#name");
-        const nicknameInput = form.querySelector("#nickname");
-        const cityInput = form.querySelector("#city");
-        const logoInput = form.querySelector("#logo");
+        const teamInput = form.name.value;
+        const nicknameInput = form.nickname.value;
+        const cityInput = form.city.value;
+        const logoInput = form.logo.value;
 
         let isValid = true;
 
-        if (!teamInput.value.trim()) {
-            flash("[js]Team name is required", "warning");
+        if (!teamInput) {
+            flash("[js] Team name is required", "warning");
             isValid = false;
         }
-        if (!nicknameInput.value.trim()) {
-            flash("[js]Team nickname is required", "warning");
-            isValid = false;
-        }
-
-        if (!cityInput.value.trim()) {
-            flash("[js]Team city is required", "warning");
+        if (!nicknameInput) {
+            flash("[js] Team nickname is required", "warning");
             isValid = false;
         }
 
-        if (!logoInput.value.trim()) {
-            flash("[js]Team logo URL is required", "warning");
+        if (!cityInput) {
+            flash("[js] Team city is required", "warning");
+            isValid = false;
+        }
+
+        if (!logoInput) {
+            flash("[js] Team logo URL is required", "warning");
             isValid = false;
         }
         return isValid;
     }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const form = document.getElementById("teamForm");
-
-        form.addEventListener("submit", function (event) {
-            if (!validate(form)) {
-                event.preventDefault(); // Prevent form submission
-            }
-        });
-    });
 </script>
 <?php require(__DIR__ . "/../../../partials/flash.php"); ?>
