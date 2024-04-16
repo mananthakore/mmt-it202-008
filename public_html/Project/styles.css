@@ -6,3 +6,7 @@ body{
     color: rgb(64, 20, 176);
 
 }
+
+.table th, .table td {
+    background-color: rgb(117, 180, 16);
+}
