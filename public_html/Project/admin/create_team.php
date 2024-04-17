@@ -1,5 +1,5 @@
 <?php
-// Include navigation and role check logic
+// Include navigation and role check logic, mmt 4/17/2024
 require(__DIR__ . "/../../../partials/nav.php");
 
 // Check if the user has admin role, redirect if not
@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $error = true;
     }
 
-    if (empty($nickname)) {
+    if (empty($nickname)) { // mmt 4/17/2024
         flash("[server] Team nickname is required", "warning");
         $error = true;
     }
@@ -60,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
         else { 
             flash("An unexpected error occurred", "danger");
-            error_log("Database error: " . $e->getMessage());
+            error_log("Database error: " . $e->getMessage()); // mmt 4/17/2024
         }
     }       
 
@@ -68,8 +68,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 
 ?>
-
-
 
 <div class="container-fluid">
     <h3>Add NBA Team</h3>
@@ -82,7 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <?php endif; ?>
         </div>
         <div class="form-group">
-            <label for="nickname">Nickname</label>
+            <label for="nickname">Nickname</label> <!-- mmt 4/17/2024 -->
             <input type="text" class="form-control <?php if (isset($error['nickname'])) echo 'is-invalid'; ?>" id="nickname" name="nickname" placeholder="Enter team nickname" required>
             <?php if (isset($error['nickname'])) : ?>
                 <div class="invalid-feedback"><?php echo $error['nickname']; ?></div>
@@ -106,7 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </form>
 </div>
 <script>
-    function validate(form) {
+    function validate(form) { // mmt 4/17/2024
         const teamInput = form.name.value;
         const nicknameInput = form.nickname.value;
         const cityInput = form.city.value;
@@ -132,7 +130,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             flash("[js] Team logo URL is required", "warning");
             isValid = false;
         }
-        return isValid;
+        return isValid; // mmt 4/17/2024
     }
 </script>
 <?php require(__DIR__ . "/../../../partials/flash.php"); ?>

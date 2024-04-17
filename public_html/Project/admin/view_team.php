@@ -1,6 +1,6 @@
 <?php
 
-require(__DIR__ . "/../../../partials/nav.php");
+require(__DIR__ . "/../../../partials/nav.php"); // mmt 4/17/2024
 
 if (!has_role("Admin")) {
     flash("You do not have permission to view this page", "warning");
@@ -25,7 +25,7 @@ if($id>-1){
 }
 else{
     flash("Invalid id passed", "danger");
-    die(header("Location: " . get_url("admin/list_teams.php")));
+    die(header("Location: " . get_url("admin/list_teams.php"))); // mmt 4/17/2024
 }
 ?>
 
@@ -39,6 +39,8 @@ else{
             <h5 class="card-title"><?php echo($teamData["name"]);?></h5>
             <p class="card-text">Nickname: <?php safer_echo($teamData["nickname"]);?></p>
             <p class="card-text">City: <?php safer_echo($teamData["city"]);?></p>
+            <a href="<?php echo get_url("edit_teams.php?id=" . $id); ?>" class="btn btn-primary">Edit</a>
+            <a href="<?php echo get_url("admin/delete_team.php?id=" . $id); ?>" class="btn btn-danger">Delete</a>
         </div>
     </div>
 </div>

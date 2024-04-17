@@ -1,6 +1,6 @@
 <?php
 require(__DIR__ . "/../../../partials/nav.php");
-
+// mmt 4/17/2024
 if(!has_role("Admin")){
     flash("You do not have permission to view this page", "warning");
     die(header("location: $BASE_PATH" . "/home.php"));
@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     } 
 
     if (empty($nickname)) {
-        flash("[server] Nickname is required", "warning");
+        flash("[server] Nickname is required", "warning"); // mmt 4/17/2024
         $errors = true;
     } 
 
@@ -54,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $query .= " WHERE id=:id";
         $params[":id"] = $id;
 
-        try {
+        try { // mmt 4/17/2024
             $stmt = $db->prepare($query);
             $stmt->execute($params);
             flash("Updated record", "success");
@@ -79,7 +79,7 @@ if($id > -1){
     }
     catch(PDOException $e){
         error_log("Error fetching record: " . var_export($e, true));
-        flash("Error fetching record", "danger");
+        flash("Error fetching record", "danger"); // mmt 4/17/2024
     }
 }
 else{
@@ -103,11 +103,11 @@ if($team){
     <div>
         <a href="<?php echo get_url("admin/list_teams.php"); ?>" class="btn btn-secondary">Back</a>
     </div>
-    <form method = "POST" onsubmit = "return validate(this);" >
+    <form method = "POST" onsubmit = "return validate(this);">
         <?php foreach($form as $field) : ?>
             <?php render_input($field); ?>
-        <?php endforeach; ?>
-        <?php render_button(["text" => "Update", "type" => "submit"]); ?>
+        <?php endforeach;  // mmt 4/17/2024?> 
+        <?php render_button(["text" => "Update", "type" => "submit"]); ?> 
     </form>
 </div>
 
@@ -129,7 +129,7 @@ if($team){
             isValid = false;
         }
 
-        if (!cityInput) {
+        if (!cityInput) { // mmt 4/17/2024
             flash("[js] Team city is required", "warning");
             isValid = false;
         }

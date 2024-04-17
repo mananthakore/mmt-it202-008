@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-require_once(__DIR__ . "/../../../lib/functions.php");
+require_once(__DIR__ . "/../../../lib/functions.php"); // mmt 4/17/2024
 
 // Check if the user has admin role, redirect if not
 if (!has_role("Admin")) {
@@ -30,4 +30,4 @@ try {
 }
 
 // Redirect to the list of teams page
-die(header("Location: " . get_url("admin/list_teams.php")));
+die(header("Location: " . get_url("admin/list_teams.php"))); // mmt 4/17/2024
