@@ -1,5 +1,5 @@
 <?php
-require(__DIR__ . "/../../../partials/nav.php");
+require(__DIR__ . "/../../../partials/nav.php"); // mmt 4/17/2024
 
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
@@ -27,7 +27,7 @@ if ($is_clear) {
     $session_data = session_load($session_key);
 }
 
-if (count($_GET) == 0 && isset($session_data) && count($session_data) > 0) {
+if (count($_GET) == 0 && isset($session_data) && count($session_data) > 0) { // mmt 4/17/2024
     if ($session_data) {
         $_GET = $session_data;
     }
@@ -59,7 +59,7 @@ if (count($_GET) > 0) {
 
     // Filter by nickname
     $nickname = se($_GET, "nickname", "", false);
-    if (!empty($nickname)) {
+    if (!empty($nickname)) { // mmt 4/17/2024
         $query .= " AND nickname LIKE :nickname";
         $params[":nickname"] = "%$nickname%";
     }
@@ -97,7 +97,7 @@ try {
 $table = [
     "data" => $results,
     "title" => "NBA Teams",
-    "ignored_columns" => ["id"],
+    "ignored_columns" => ["id"], // mmt 4/17/2024
     // Add edit and delete URLs if needed
     "edit_url" => get_url("admin/edit_teams.php"),
     "delete_url" => get_url("admin/delete_teams.php"),
@@ -116,7 +116,7 @@ $table = [
         </div>
         <?php render_button(["text" => "Search", "type" => "submit", "text" => "Filter"]); ?>
         <a href="?clear" class="btn btn-secondary">Clear</a>
-    </form>
+    </form> <!-- mmt 4/17/2024 -->
     <?php render_table($table); ?>
 </div>
 
