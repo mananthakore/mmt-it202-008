@@ -1,11 +1,7 @@
 <?php
 
-require(__DIR__ . "/../../../partials/nav.php"); // mmt 4/17/2024
+require(__DIR__ . "/../../partials/nav.php"); // mmt 4/17/2024
 
-if (!has_role("Admin")) {
-    flash("You do not have permission to view this page", "warning");
-    redirect("home.php");
-}
 
 $id = se($_GET, "id", -1, false);
 
@@ -16,7 +12,10 @@ if($id>-1){
     try{
         $stmt=$db->prepare($query);
         $stmt->execute([":id"=>$id]);
-        $teamData=$stmt->fetch(PDO::FETCH_ASSOC);
+        $r=$stmt->fetch();
+        if($r) { 
+            $teamData = $r;
+        }
     }
     catch(PDOException $e){
         error_log("Error fetching team data: " . var_export($e, true));
@@ -25,7 +24,13 @@ if($id>-1){
 }
 else{
     flash("Invalid id passed", "danger");
-    redirect("admin/list_teams.php"); // mmt 4/17/2024
+    redirect("teams.php"); // mmt 4/17/2024
+}
+
+foreach($teamData as $key=>$value) { 
+    if(is_null($value)) { 
+        $teamData[$key] = "N/A";
+    }
 }
 ?>
 
@@ -39,10 +44,13 @@ else{
             <h5 class="card-title"><?php echo($teamData["name"]);?></h5>
             <p class="card-text">Nickname: <?php safer_echo($teamData["nickname"]);?></p>
             <p class="card-text">City: <?php safer_echo($teamData["city"]);?></p>
-            <a href="<?php echo get_url("edit_teams.php?id=" . $id); ?>" class="btn btn-primary">Edit</a>
-            <a href="<?php echo get_url("admin/delete_team.php?id=" . $id); ?>" class="btn btn-danger">Delete</a>
+           <!-- <a href=" <//?php echo get_url("edit_teams.php?id=" . $id); ?>" class="btn btn-primary">Edit</a> -->
+           <!-- <a href=" <//?php echo get_url("admin/delete_team.php?id=" . $id); ?>" class="btn btn-danger">Delete</a> -->
+           <div class = "card-body">
+                <a href="<?php echo get_url('api/team_details.php?team_id=' . $id); ?>" class="card-link">Favorite Team</a>
+            </div>
         </div>
     </div>
 </div>
 
-<?php require(__DIR__ . "/../../../partials/flash.php");?>
+<?php require(__DIR__ . "/../../partials/flash.php");?>

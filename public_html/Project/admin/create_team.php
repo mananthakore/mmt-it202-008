@@ -5,7 +5,7 @@ require(__DIR__ . "/../../../partials/nav.php");
 // Check if the user has admin role, redirect if not
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
-    die(header("Location: $BASE_PATH" . "/home.php"));
+    redirect("home.php");
 }
 
 // Initialize an array to store validation errors

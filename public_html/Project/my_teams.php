@@ -1,10 +1,5 @@
 <?php
-require(__DIR__ . "/../../../partials/nav.php"); // mmt 4/17/2024
-
-if (!has_role("Admin")) {
-    flash("You don't have permission to view this page", "warning");
-    redirect("home.php");
-}
+require(__DIR__ . "/../../partials/nav.php"); // mmt 4/17/2024
 
 // Build search form
 $form = [
@@ -15,8 +10,11 @@ $form = [
     ["type" => "number", "name" => "limit", "label" => "Limit", "value" => "10", "include_margin" => false]
 ];
 
-$query = "SELECT id, name, city, nickname, logo FROM `NBA_Teams` WHERE 1=1";
-$params = [];
+$query = "SELECT t.id, name, city, nickname, logo, user_id FROM `NBA_Teams` t
+JOIN `UserTeams` ut ON t.id = ut.team_id 
+WHERE user_id = :user_id";
+
+$params = [":user_id" => get_user_id()];
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
 if ($is_clear) {
@@ -94,18 +92,26 @@ try {
     flash("Unhandled error occurred", "danger");
 }
 
+foreach ($results as $index => $teamData) {
+    foreach ($teamData as $key => $value) {
+        if (is_null($value)) {
+            $results[$index][$key] = "N/A";
+        }
+    }
+}
+
 $table = [
     "data" => $results,
     "title" => "NBA Teams",
     "ignored_columns" => ["id"], // mmt 4/17/2024
     // Add edit and delete URLs if needed
-    "edit_url" => get_url("admin/edit_teams.php"),
-    "delete_url" => get_url("admin/delete_teams.php"),
-    "view_url" => get_url("admin/view_team.php")
+   // "edit_url" => get_url("edit_teams.php"),
+   // "delete_url" => get_url("delete_teams.php"),
+    "view_url" => get_url("team.php")
 ];
 ?>
 <div class="container-fluid">
-    <h3>List NBA Teams</h3>
+    <h3>My Favorite Teams</h3>
     <form method="GET">
         <div class="row mb-3" style="align-items: flex-end;">
             <?php foreach ($form as $k => $v) : ?>
@@ -118,6 +124,10 @@ $table = [
         <a href="?clear" class="btn btn-secondary">Clear</a>
     </form> <!-- mmt 4/17/2024 -->
     <?php render_table($table); ?>
+    <div class = "row">
+    <?php foreach($results as $teamData):?>
+        <div class = "col"></div>
+        <?php endforeach;?>
 </div>
 
-<?php require_once(__DIR__ . "/../../../partials/flash.php"); ?>
+<?php require_once(__DIR__ . "/../../partials/flash.php"); ?>
