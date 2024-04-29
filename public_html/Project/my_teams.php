@@ -15,6 +15,35 @@ if (isset($_GET["remove"])) {
 
     redirect("my_teams.php");
 }
+
+$db = getDB();
+if (isset($_GET["remove"])) {
+    $query = "DELETE FROM `UserTeams`";
+    try {
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+        flash("All teams removed", "success");
+    } catch (PDOException $e) {
+        error_log("Error removing all teams: " . var_export($e, true));
+        flash("Error removing all teams", "danger");
+    }
+    redirect("my_teams.php");
+}
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["remove_team_id"])) {
+    $remove_team_id = $_POST["remove_team_id"];
+    $query = "DELETE FROM `UserTeams` WHERE team_id = :team_id";
+    $params = [":team_id" => $remove_team_id];
+    try {
+        $stmt = $db->prepare($query);
+        $stmt->execute($params);
+        flash("Team selected removed successfully", "success");
+        redirect("admin/team_associations.php");
+    } catch (PDOException $e) {
+        error_log("Error removing team: " . $e->getMessage());
+        flash("Error removing team", "danger");
+    }
+}
+
 // Build search form
 $form = [
     ["type" => "text", "name" => "name", "placeholder" => "Team Name", "label" => "Team Name", "include_margin" => false],
@@ -26,11 +55,11 @@ $form = [
 
 $total_records = get_total_count("`NBA_Teams` t
 JOIN `UserTeams` ut ON t.id = ut.team_id
-WHERE user_id = :user_id", [":user_id" => get_user_id()]);
+WHERE ut.user_id = :user_id", [":user_id" => get_user_id()]);
 
-$query = "SELECT t.id, name, city, nickname, logo, user_id FROM `NBA_Teams` t
-JOIN `UserTeams` ut ON t.id = ut.team_id 
-WHERE user_id = :user_id";
+$query = "SELECT t.id AS team_id, name, city, nickname, logo, user_id FROM `NBA_Teams` t
+JOIN `UserTeams` utt ON t.id = utt.team_id 
+WHERE utt.user_id = :user_id";
 
 $params = [":user_id" => get_user_id()];
 $session_key = $_SERVER["SCRIPT_NAME"];
@@ -120,11 +149,12 @@ foreach ($results as $index => $teamData) {
 $table = [
     "data" => $results,
     "title" => "NBA Teams",
-    "ignored_columns" => ["id"], // mmt 4/17/2024
+    "ignored_columns" => ["team_id"],["user_id"], // mmt 4/17/2024
     // Add edit and delete URLs if needed
    // "edit_url" => get_url("edit_teams.php"),
    // "delete_url" => get_url("delete_teams.php"),
-    "view_url" => get_url("team.php")
+    "view_url" => get_url("team.php"),
+    "remove_button" => true
 ];
 ?>
 <div class="container-fluid">
