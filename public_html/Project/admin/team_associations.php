@@ -19,10 +19,10 @@ if (isset($_GET["remove"])) {
     redirect("my_teams.php");
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["remove_team_id"])) {
-    $remove_team_id = $_POST["remove_team_id"];
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["removeTeamId"])) {
+    $removeTeamId = $_POST["removeTeamId"];
     $query = "DELETE FROM `UserTeams` WHERE team_id = :team_id";
-    $params = [":team_id" => $remove_team_id];
+    $params = [":team_id" => $removeTeamId];
     try {
         $stmt = $db->prepare($query);
         $stmt->execute($params);
@@ -37,7 +37,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["remove_team_id"])) {
 // Build search form
 $form = [
     ["type" => "text", "name" => "username", "placeholder" => "Username", "label" => "Username", "include_margin" => false],
-
     ["type" => "text", "name" => "name", "placeholder" => "Team Name", "label" => "Team Name", "include_margin" => false],
     ["type" => "text", "name" => "city", "placeholder" => "City", "label" => "City", "include_margin" => false],
     ["type" => "text", "name" => "nickname", "placeholder" => "Nickname", "label" => "Nickname", "include_margin" => false],
@@ -48,8 +47,23 @@ $form = [
 $total_records = get_total_count("`NBA_Teams` t
 JOIN `UserTeams` ut ON t.id = ut.team_id");
 
-$query = "SELECT u.username, t.id AS team_id, name, city, nickname, logo, user_id FROM `NBA_Teams` t
-JOIN `UserTeams` ut ON t.id = ut.team_id JOIN Users u ON u.id = ut.user_id WHERE ut.is_active = 1";
+//$query = "SELECT u.username, t.id AS team_id, name, city, nickname, logo, user_id FROM `NBA_Teams` t
+//JOIN `UserTeams` ut ON t.id = ut.team_id JOIN Users u ON u.id = ut.user_id WHERE ut.is_active = 1";
+
+$query = "SELECT 
+    t.id AS team_id,
+    name, 
+    city, 
+    nickname, 
+    logo, 
+    u.username,
+    ut.user_id,
+    (SELECT COUNT(ut2.user_id) FROM `UserTeams` ut2 WHERE ut2.team_id = t.id) AS total_associated_users
+    FROM `NBA_Teams` t
+    LEFT JOIN `UserTeams` ut ON t.id = ut.team_id 
+    LEFT JOIN `Users` u ON u.id = ut.user_id
+    WHERE ut.is_active = 1";
+
 
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
@@ -147,13 +161,21 @@ foreach ($results as $index => $teamData) {
 $table = [
     "data" => $results,
     "title" => "NBA Teams",
-    "ignored_columns" => ["team_id"],["user_id"], // mmt 4/17/2024
+    "ignored_columns" => ["team_id"],["user_id"],["logo"], // mmt 4/17/2024
     // Add edit and delete URLs if needed
    "edit_url" => get_url("edit_teams.php"),
    "delete_url" => get_url("delete_teams.php"),
     "view_url" => get_url("team.php"),
-    "remove_button" => true,
-    "profile_link" => true
+    "removeButton" => true,
+    "profile_link" => true,
+    "columns" => [
+        ["title" => "username", "key" => "username"],
+        ["title" => "name", "key" => "name"],
+        ["title" => "nickname", "key" => "nickname"],
+        ["title" => "city", "key" => "city"],
+        ["title" => "logo", "key" => "logo"],
+        ["title" => "Total Users", "key" => "total_users"]
+    ]
 ];
 ?>
 <div class="container-fluid">
