@@ -29,10 +29,10 @@ if (isset($_GET["remove"])) {
     }
     redirect("my_teams.php");
 }
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["remove_team_id"])) {
-    $remove_team_id = $_POST["remove_team_id"];
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["removeTeamId"])) {
+    $removeTeamId = $_POST["removeTeamId"];
     $query = "DELETE FROM `UserTeams` WHERE team_id = :team_id";
-    $params = [":team_id" => $remove_team_id];
+    $params = [":team_id" => $removeTeamId];
     try {
         $stmt = $db->prepare($query);
         $stmt->execute($params);
@@ -154,7 +154,7 @@ $table = [
    // "edit_url" => get_url("edit_teams.php"),
    // "delete_url" => get_url("delete_teams.php"),
     "view_url" => get_url("team.php"),
-    "remove_button" => true
+    "removeButton" => true
 ];
 ?>
 <div class="container-fluid">

@@ -58,7 +58,7 @@ session_start();
             <li ><a class="dropdown-item" href="<?php echo get_url('admin/create_role.php'); ?>">Create Role</a></li>
             <li ><a class="dropdown-item" href="<?php echo get_url('admin/list_roles.php'); ?>">List Roles</a></li>
             <li ><a class="dropdown-item" href="<?php echo get_url('admin/assign_roles.php'); ?>">Assign Roles</a></li>
-            <li ><a class="dropdown-item" href="<?php echo get_url('admin/assign_teams.php'); ?>">Assign Teams</a></li>
+            
         </ul>
         </li>
             <?php endif; ?>
@@ -72,6 +72,7 @@ session_start();
             <li ><a class="dropdown-item" href="<?php echo get_url('admin/list_teams.php'); ?>">List Team</a></li>
             <li ><a class="dropdown-item" href="<?php echo get_url('admin/fetch_team.php'); ?>">Fetch Team</a></li>
             <li ><a class="dropdown-item" href="<?php echo get_url('admin/team_associations.php'); ?>">Team Associations</a></li>
+            <li ><a class="dropdown-item" href="<?php echo get_url('admin/assign_teams.php'); ?>">Assign Teams</a></li>
         </ul>
         </li>
             <?php endif; ?>

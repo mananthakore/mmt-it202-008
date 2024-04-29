@@ -1,12 +1,12 @@
 
-nav li{display: inline; background-color: rgb(90, 113, 187);}
-nav li a{color: rgb(63, 182, 154)}
+nav li{display: inline; background-color: floralwhite;}
+nav li a{color: rgb(20, 134, 154)}
 body{
-    background-color: rgb(96, 183, 207);
-    color: rgb(64, 20, 176);
+    background-color: darkgrey;
+    color: rgb(0, 0, 0);
 
 }
 
 .table th, .table td {
-    background-color: rgb(117, 180, 16);
+    background-color: floralwhite;
 }
