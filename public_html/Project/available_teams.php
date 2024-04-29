@@ -9,11 +9,11 @@ $form = [
     ["type" => "text", "name" => "logo", "placeholder" => "Logo (Link)", "label" => "Logo (Link)", "include_margin" => false],
     ["type" => "number", "name" => "limit", "label" => "Limit", "value" => "10", "include_margin" => false]
 ];
-$total_records = get_total_count("`NBA_Teams` t LEFT JOIN `UserTeams` ut on t.id = ut.team_id");
+$total_records = get_total_count("`NBA_Teams` t WHERE t.id NOT IN (SELECT team_id FROM `UserTeams`)");
 
-$query = "SELECT u.username, t.id, name, city, nickname, logo, ut.user_id FROM `NBA_Teams` t
-LEFT JOIN `UserTeams` ut ON t.id = ut.team_id LEFT JOIN Users u on u.id = ut.user_id
-WHERE 1=1";
+$query = "SELECT t.id, name, city, nickname, logo FROM `NBA_Teams` t
+WHERE t.id NOT IN (SELECT team_id FROM `UserTeams`)";
+
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
@@ -103,7 +103,7 @@ $table = [
 ];
 ?>
 <div class="container-fluid">
-    <h3>NBA Teams</h3>
+    <h3>Available Teams</h3>
     <form method="GET">
         <div class="row mb-3" style="align-items: flex-end;">
             <?php foreach ($form as $k => $v) : ?>

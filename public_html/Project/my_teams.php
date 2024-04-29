@@ -1,6 +1,20 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php"); // mmt 4/17/2024
+$db = getDB();
+//remove all associations
+if (isset($_GET["remove"])) {
+    $query = "DELETE FROM `UserTeams` WHERE user_id = :user_id";
+    try {
+        $stmt = $db->prepare($query);
+        $stmt->execute([":user_id" => get_user_id()]);
+        flash("Successfully removed all teams", "success");
+    } catch (PDOException $e) {
+        error_log("Error removing team associations: " . var_export($e, true));
+        flash("Error removing team associations", "danger");
+    }
 
+    redirect("my_teams.php");
+}
 // Build search form
 $form = [
     ["type" => "text", "name" => "name", "placeholder" => "Team Name", "label" => "Team Name", "include_margin" => false],
@@ -9,6 +23,10 @@ $form = [
     ["type" => "text", "name" => "logo", "placeholder" => "Logo (Link)", "label" => "Logo (Link)", "include_margin" => false],
     ["type" => "number", "name" => "limit", "label" => "Limit", "value" => "10", "include_margin" => false]
 ];
+
+$total_records = get_total_count("`NBA_Teams` t
+JOIN `UserTeams` ut ON t.id = ut.team_id
+WHERE user_id = :user_id", [":user_id" => get_user_id()]);
 
 $query = "SELECT t.id, name, city, nickname, logo, user_id FROM `NBA_Teams` t
 JOIN `UserTeams` ut ON t.id = ut.team_id 
@@ -40,7 +58,6 @@ if (count($_GET) > 0) {
             $form[$k]["value"] = $_GET[$v["name"]];
         }
     }
-
     // Filter by team name
     $name = se($_GET, "name", "", false);
     if (!empty($name)) {
@@ -112,6 +129,9 @@ $table = [
 ?>
 <div class="container-fluid">
     <h3>My Favorite Teams</h3>
+    <div>
+        <a href="?remove" onclick="confirm('Are you sure')?'':event.preventDefault()" class="btn btn-danger">Remove All Teams</a>
+    </div>
     <form method="GET">
         <div class="row mb-3" style="align-items: flex-end;">
             <?php foreach ($form as $k => $v) : ?>
@@ -121,7 +141,13 @@ $table = [
             <?php endforeach; ?>
         </div>
         <?php render_button(["text" => "Search", "type" => "submit", "text" => "Filter"]); ?>
+        <?php render_result_counts(count($results), $total_records); ?>
         <a href="?clear" class="btn btn-secondary">Clear</a>
+        <?php if (isset($userData["username"])) : ?>
+            <div class="card-header">
+                Owned By: <?php se($userData, "username", "N/A"); ?>
+            </div>
+        <?php endif; ?>
     </form> <!-- mmt 4/17/2024 -->
     <?php render_table($table); ?>
     <div class = "row">

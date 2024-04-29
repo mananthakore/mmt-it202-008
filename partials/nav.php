@@ -42,6 +42,7 @@ session_start();
             <li class="nav-item"><a class="nav-link" href="<?php echo get_url('home.php'); ?>">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="<?php echo get_url('profile.php'); ?>">Profile</a></li>
             <li class="nav-item"><a class="nav-link" href="<?php echo get_url('teams.php'); ?>">NBA Teams</a></li>
+            <li class="nav-item"><a class="nav-link" href="<?php echo get_url('available_teams.php'); ?>">Available</a></li>
             <li class="nav-item"><a class="nav-link" href="<?php echo get_url('my_teams.php'); ?>">My NBA Teams</a></li>
         <?php endif; ?>
         <?php if (!is_logged_in()) : ?>
@@ -51,7 +52,7 @@ session_start();
         <?php if (has_role("Admin")) : ?>
             <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Admin
+            Roles
           </a>
           <ul class="dropdown-menu">
             <li ><a class="dropdown-item" href="<?php echo get_url('admin/create_role.php'); ?>">Create Role</a></li>
@@ -69,6 +70,7 @@ session_start();
             <li ><a class="dropdown-item" href="<?php echo get_url('admin/create_team.php'); ?>">Create Team</a></li>
             <li ><a class="dropdown-item" href="<?php echo get_url('admin/list_teams.php'); ?>">List Team</a></li>
             <li ><a class="dropdown-item" href="<?php echo get_url('admin/fetch_team.php'); ?>">Fetch Team</a></li>
+            <li ><a class="dropdown-item" href="<?php echo get_url('admin/team_associations.php'); ?>">Team Associations</a></li>
         </ul>
         </li>
             <?php endif; ?>

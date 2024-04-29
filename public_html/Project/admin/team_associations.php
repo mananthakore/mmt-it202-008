@@ -1,19 +1,28 @@
 <?php
-require(__DIR__ . "/../../partials/nav.php"); // mmt 4/17/2024
+require(__DIR__ . "/../../../partials/nav.php"); // mmt 4/17/2024
+
+if (!has_role("Admin")) {
+    flash("You don't have permission to view this page", "warning");
+    redirect("home.php");
+}
 
 // Build search form
 $form = [
+    ["type" => "text", "name" => "username", "placeholder" => "Username", "label" => "Username", "include_margin" => false],
+
     ["type" => "text", "name" => "name", "placeholder" => "Team Name", "label" => "Team Name", "include_margin" => false],
     ["type" => "text", "name" => "city", "placeholder" => "City", "label" => "City", "include_margin" => false],
     ["type" => "text", "name" => "nickname", "placeholder" => "Nickname", "label" => "Nickname", "include_margin" => false],
     ["type" => "text", "name" => "logo", "placeholder" => "Logo (Link)", "label" => "Logo (Link)", "include_margin" => false],
     ["type" => "number", "name" => "limit", "label" => "Limit", "value" => "10", "include_margin" => false]
 ];
-$total_records = get_total_count("`NBA_Teams` t LEFT JOIN `UserTeams` ut on t.id = ut.team_id");
 
-$query = "SELECT u.username, t.id, name, city, nickname, logo, ut.user_id FROM `NBA_Teams` t
-LEFT JOIN `UserTeams` ut ON t.id = ut.team_id LEFT JOIN Users u on u.id = ut.user_id
-WHERE 1=1";
+$total_records = get_total_count("`NBA_Teams` t
+JOIN `UserTeams` ut ON t.id = ut.team_id");
+
+$query = "SELECT u.username, t.id, name, city, nickname, logo, user_id FROM `NBA_Teams` t
+JOIN `UserTeams` ut ON t.id = ut.team_id JOIN Users u ON u.id = ut.user_id";
+
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
@@ -39,6 +48,13 @@ if (count($_GET) > 0) {
         if (in_array($v["name"], $keys)) {
             $form[$k]["value"] = $_GET[$v["name"]];
         }
+    }
+
+    // filter by username 
+    $username = se($_GET, "username", "", false);
+    if (!empty($username)) {
+        $query .= " AND u.username LIKE :username";
+        $params[":username"] = "%$username%";
     }
 
     // Filter by team name
@@ -92,6 +108,14 @@ try {
     flash("Unhandled error occurred", "danger");
 }
 
+foreach ($results as $index => $teamData) {
+    foreach ($teamData as $key => $value) {
+        if (is_null($value)) {
+            $results[$index][$key] = "N/A";
+        }
+    }
+}
+
 $table = [
     "data" => $results,
     "title" => "NBA Teams",
@@ -103,7 +127,7 @@ $table = [
 ];
 ?>
 <div class="container-fluid">
-    <h3>NBA Teams</h3>
+    <h3>Associated Teams</h3>
     <form method="GET">
         <div class="row mb-3" style="align-items: flex-end;">
             <?php foreach ($form as $k => $v) : ?>
@@ -111,17 +135,11 @@ $table = [
                     <?php render_input($v); ?>
                 </div>
             <?php endforeach; ?>
-            <?php if (isset($userData["username"])) : ?>
-            <div class="card-header">
-                Owned By: <?php se($userData, "username", "N/A"); ?>
-            </div>
-        <?php endif; ?>
         </div>
-        <?php render_result_counts(count($results), $total_records); ?>
         <?php render_button(["text" => "Search", "type" => "submit", "text" => "Filter"]); ?>
+        <?php render_result_counts(count($results), $total_records); ?>
         <a href="?clear" class="btn btn-secondary">Clear</a>
     </form> <!-- mmt 4/17/2024 -->
-    
     <?php render_table($table); ?>
     <div class = "row">
     <?php foreach($results as $teamData):?>
@@ -129,4 +147,4 @@ $table = [
         <?php endforeach;?>
 </div>
 
-<?php require_once(__DIR__ . "/../../partials/flash.php"); ?>
+<?php require_once(__DIR__ . "/../../../partials/flash.php"); ?>
