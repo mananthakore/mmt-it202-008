@@ -8,6 +8,7 @@ if (isset($_GET["team_id"]) && is_logged_in()) {
         $stmt = $db->prepare($query);
         $stmt->execute([":user_id" => get_user_id(), ":team_id" => $_GET["team_id"]]);
         flash("You've successfully favorited the team", "success");
+        redirect("my_teams.php");
     } catch (PDOException $e) {
         if ($e->errorInfo[1] === 1062) {
             flash("Team already favorited", "danger");

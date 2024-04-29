@@ -15,6 +15,7 @@ $form = [
     ["type" => "number", "name" => "limit", "label" => "Limit", "value" => "10", "include_margin" => false]
 ];
 
+$total_records = get_total_count("`NBA_Teams`");
 $query = "SELECT id, name, city, nickname, logo FROM `NBA_Teams` WHERE 1=1";
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
@@ -117,6 +118,7 @@ $table = [
         <?php render_button(["text" => "Search", "type" => "submit", "text" => "Filter"]); ?>
         <a href="?clear" class="btn btn-secondary">Clear</a>
     </form> <!-- mmt 4/17/2024 -->
+    <?php render_result_counts(count($results), $total_records); ?>
     <?php render_table($table); ?>
 </div>
 
