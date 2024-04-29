@@ -5,6 +5,34 @@ if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
     redirect("home.php");
 }
+$db = getDB();
+if (isset($_GET["remove"])) {
+    $query = "DELETE FROM `UserTeams`";
+    try {
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+        flash("All teams removed", "success");
+    } catch (PDOException $e) {
+        error_log("Error removing all teams: " . var_export($e, true));
+        flash("Error removing all teams", "danger");
+    }
+    redirect("my_teams.php");
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["remove_team_id"])) {
+    $remove_team_id = $_POST["remove_team_id"];
+    $query = "DELETE FROM `UserTeams` WHERE team_id = :team_id";
+    $params = [":team_id" => $remove_team_id];
+    try {
+        $stmt = $db->prepare($query);
+        $stmt->execute($params);
+        flash("Team selected removed successfully", "success");
+        redirect("admin/team_associations.php");
+    } catch (PDOException $e) {
+        error_log("Error removing team: " . $e->getMessage());
+        flash("Error removing team", "danger");
+    }
+}
 
 // Build search form
 $form = [
@@ -20,8 +48,8 @@ $form = [
 $total_records = get_total_count("`NBA_Teams` t
 JOIN `UserTeams` ut ON t.id = ut.team_id");
 
-$query = "SELECT u.username, t.id, name, city, nickname, logo, user_id FROM `NBA_Teams` t
-JOIN `UserTeams` ut ON t.id = ut.team_id JOIN Users u ON u.id = ut.user_id";
+$query = "SELECT u.username, t.id AS team_id, name, city, nickname, logo, user_id FROM `NBA_Teams` t
+JOIN `UserTeams` ut ON t.id = ut.team_id JOIN Users u ON u.id = ut.user_id WHERE ut.is_active = 1";
 
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
@@ -119,15 +147,20 @@ foreach ($results as $index => $teamData) {
 $table = [
     "data" => $results,
     "title" => "NBA Teams",
-    "ignored_columns" => ["id"], // mmt 4/17/2024
+    "ignored_columns" => ["team_id"],["user_id"], // mmt 4/17/2024
     // Add edit and delete URLs if needed
-   // "edit_url" => get_url("edit_teams.php"),
-   // "delete_url" => get_url("delete_teams.php"),
-    "view_url" => get_url("team.php")
+   "edit_url" => get_url("edit_teams.php"),
+   "delete_url" => get_url("delete_teams.php"),
+    "view_url" => get_url("team.php"),
+    "remove_button" => true,
+    "profile_link" => true
 ];
 ?>
 <div class="container-fluid">
     <h3>Associated Teams</h3>
+    <div>
+        <a href="?remove" onclick="confirm('Are you sure')?'':event.preventDefault()" class="btn btn-danger">Remove All Teams</a>
+    </div>
     <form method="GET">
         <div class="row mb-3" style="align-items: flex-end;">
             <?php foreach ($form as $k => $v) : ?>
@@ -141,6 +174,9 @@ $table = [
         <a href="?clear" class="btn btn-secondary">Clear</a>
     </form> <!-- mmt 4/17/2024 -->
     <?php render_table($table); ?>
+    <div>
+            <a href="<?php echo get_url('remove_filtered.php?' . http_build_query($_GET)); ?>" class="btn btn-danger">Remove Filtered Team Associations</a>
+        </div>
     <div class = "row">
     <?php foreach($results as $teamData):?>
         <div class = "col"></div>

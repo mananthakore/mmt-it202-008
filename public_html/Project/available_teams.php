@@ -95,7 +95,7 @@ try {
 $table = [
     "data" => $results,
     "title" => "NBA Teams",
-    "ignored_columns" => ["id"], // mmt 4/17/2024
+    "ignored_columns" => ["team_id"],["user_id"], // mmt 4/17/2024
     // Add edit and delete URLs if needed
    // "edit_url" => get_url("edit_teams.php"),
    // "delete_url" => get_url("delete_teams.php"),

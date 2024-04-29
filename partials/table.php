@@ -54,6 +54,9 @@
                 <?php if ($_has_atleast_one_url) : ?>
                     <th>Actions</th>
                 <?php endif; ?>
+                <?php if (isset($data['remove_button']) && $data['remove_button']) : ?>
+                    <th>Remove</th>
+                <?php endif; ?>
             </thead>
         <?php endif; ?>
         <tbody>
@@ -62,7 +65,19 @@
                     <tr>
                         <?php foreach ($row as $k => $v) : ?>
                             <?php if (!in_array($k, $_ignored_columns)) : ?>
-                                <td><?php se($v); ?></td>
+                                <td>
+                                <?php if (isset($data['profile_link']) && $data['profile_link']) : ?>
+                                        <?php if ($k === 'username') : ?>
+                                            <?php $user_id = $row['user_id']; ?>
+                                            <?php $profile_url = get_url("profile.php?id=$user_id"); ?>
+                                            <a href="<?php echo $profile_url; ?>"><?php echo se($v); ?></a>
+                                        <?php else : ?>
+                                            <?php echo se($v); ?>
+                                        <?php endif; ?>
+                                    <?php else : ?>
+                                        <?php echo se($v); ?>
+                                    <?php endif; ?>
+                                </td>
                             <?php endif; ?>
                         <?php endforeach; ?>
                         <?php if ($_has_atleast_one_url) : ?>
@@ -83,6 +98,14 @@
                                         <input type="submit" class="<?php se($_post_self_form, "classes"); ?>" value="<?php se($_post_self_form, "label", "Submit"); ?>" />
                                     </form>
                                 <?php endif; ?>
+                            </td>
+                        <?php endif; ?>
+                        <?php if (isset($data['remove_button']) && $data['remove_button']) : ?>
+                            <td>
+                                <form method="POST">
+                                    <input type="hidden" name="remove_team_id" value="<?php echo $row['team_id']; ?>">
+                                    <button type="submit" class="btn btn-danger">Remove</button>
+                                </form>
                             </td>
                         <?php endif; ?>
                     </tr>
