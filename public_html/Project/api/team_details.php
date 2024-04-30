@@ -1,5 +1,5 @@
 <?php
-require(__DIR__ . "/../../../lib/functions.php");
+require(__DIR__ . "/../../../lib/functions.php"); // mmt 4/30/24
 session_start();
 if (isset($_GET["team_id"]) && is_logged_in()) {
     $db = getDB();
