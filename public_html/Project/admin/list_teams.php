@@ -3,7 +3,7 @@ require(__DIR__ . "/../../../partials/nav.php"); // mmt 4/17/2024
 
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
-    die(header("Location: $BASE_PATH" . "/home.php"));
+    redirect("home.php");
 }
 
 // Build search form
@@ -15,6 +15,7 @@ $form = [
     ["type" => "number", "name" => "limit", "label" => "Limit", "value" => "10", "include_margin" => false]
 ];
 
+$total_records = get_total_count("`NBA_Teams`");
 $query = "SELECT id, name, city, nickname, logo FROM `NBA_Teams` WHERE 1=1";
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
@@ -22,7 +23,7 @@ $is_clear = isset($_GET["clear"]);
 if ($is_clear) {
     session_delete($session_key);
     unset($_GET["clear"]);
-    die(header("Location: " . $session_key));
+    redirect($session_key);
 } else {
     $session_data = session_load($session_key);
 }
@@ -97,7 +98,7 @@ try {
 $table = [
     "data" => $results,
     "title" => "NBA Teams",
-    "ignored_columns" => ["id"], // mmt 4/17/2024
+    "ignored_columns" => ["team_id"],["user_id"], // mmt 4/17/2024
     // Add edit and delete URLs if needed
     "edit_url" => get_url("admin/edit_teams.php"),
     "delete_url" => get_url("admin/delete_teams.php"),
@@ -117,6 +118,7 @@ $table = [
         <?php render_button(["text" => "Search", "type" => "submit", "text" => "Filter"]); ?>
         <a href="?clear" class="btn btn-secondary">Clear</a>
     </form> <!-- mmt 4/17/2024 -->
+    <?php render_result_counts(count($results), $total_records); ?>
     <?php render_table($table); ?>
 </div>
 

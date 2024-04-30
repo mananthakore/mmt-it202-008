@@ -3,7 +3,7 @@ require(__DIR__ . "/../../../partials/nav.php");
 // mmt 4/17/2024
 if(!has_role("Admin")){
     flash("You do not have permission to view this page", "warning");
-    die(header("location: $BASE_PATH" . "/home.php"));
+    redirect("home.php");
 }
 
 $id = se($_GET, "id", -1, false);
@@ -84,7 +84,7 @@ if($id > -1){
 }
 else{
     flash("Invalid ID passed", "danger");
-    die(header("Location:" . get_url("admin/list_teams.php")));
+    redirect("admin/list_teams.php");
 }
 
 if($team){
