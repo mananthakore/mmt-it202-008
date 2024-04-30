@@ -154,7 +154,8 @@ $table = [
    // "edit_url" => get_url("edit_teams.php"),
    // "delete_url" => get_url("delete_teams.php"),
     "view_url" => get_url("team.php"),
-    "removeButton" => true
+    "removeButton" => true,
+    "primary_key" =>"team_id"
 ];
 ?>
 <div class="container-fluid">

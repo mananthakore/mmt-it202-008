@@ -1,6 +1,6 @@
 <?php
 
-require(__DIR__ . "/../../../partials/nav.php");
+require(__DIR__ . "/../../../partials/nav.php"); // mmt 4/29/2024
 
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
@@ -37,7 +37,7 @@ $entityIdentifier = "";
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $entityIdentifier = $_POST["entity_identifier"] ?? "";
 
-    if (!empty($entityIdentifier)) {
+    if (!empty($entityIdentifier)) { // mmt 4/29/2024
         $db = getDB();
         $stmt = $db->prepare("SELECT id, name FROM `NBA_Teams` WHERE name LIKE :entityIdentifier LIMIT 25");
         
@@ -58,7 +58,7 @@ $username = "";
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $username = $_POST["username"] ?? "";
 
-    if (!empty($username)) {
+    if (!empty($username)) { // mmt 4/29/2024
         $db = getDB();
         $stmt = $db->prepare("SELECT id, username FROM Users WHERE username LIKE :username LIMIT 25");
         
@@ -85,7 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <?php render_input(["type" => "search", "name" => "username", "placeholder" => "Username Search", "value" => $username]); ?>
             </div>
             <div class="col">
-                <?php render_button(["text" => "Search", "type" => "submit"]); ?>
+                <?php render_button(["text" => "Search", "type" => "submit"]); // mmt 4/29/2024?>
             </div>
         </div>
     </form>
@@ -112,7 +112,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 <?php render_input(["type" => "checkbox", "id" => "user_" . se($user, 'id', "", false), "name" => "users[]", "label" => se($user, "username", "", false), "value" => se($user, 'id', "", false)]); ?>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php endforeach; // mmt 4/29/2024 ?>
                 </table>
             </div>
         </div>
