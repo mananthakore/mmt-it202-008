@@ -6,7 +6,7 @@ require_once(__DIR__ . "/../../../lib/functions.php"); // mmt 4/17/2024
 // Check if the user has admin role, redirect if not
 if (!has_role("Admin")) {
     flash("You do not have permission to view this page", "warning");
-    die(header("Location: $BASE_PATH" . "/home.php"));
+    redirect("home.php");
 }
 
 $id = se($_GET, "id", -1, false);
@@ -14,7 +14,7 @@ $id = se($_GET, "id", -1, false);
 // Validate if the id is valid
 if ($id < 1) {
     flash("Invalid id passed to delete", "danger");
-    die(header("Location: " . get_url("admin/list_teams.php")));
+    redirect("admin/list_teams.php");
 }
 
 // Delete team record
@@ -30,4 +30,4 @@ try {
 }
 
 // Redirect to the list of teams page
-die(header("Location: " . get_url("admin/list_teams.php"))); // mmt 4/17/2024
+redirect("admin/list_teams.php"); // mmt 4/17/2024

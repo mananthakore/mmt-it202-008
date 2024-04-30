@@ -1,9 +1,47 @@
 <?php
-require(__DIR__ . "/../../../partials/nav.php"); // mmt 4/17/2024
+require(__DIR__ . "/../../partials/nav.php"); // mmt 4/17/2024
+$db = getDB();
+//remove all associations
+if (isset($_GET["remove"])) {
+    $query = "DELETE FROM `UserTeams` WHERE user_id = :user_id";
+    try {
+        $stmt = $db->prepare($query);
+        $stmt->execute([":user_id" => get_user_id()]);
+        flash("Successfully removed all teams", "success");
+    } catch (PDOException $e) {
+        error_log("Error removing team associations: " . var_export($e, true));
+        flash("Error removing team associations", "danger");
+    }
 
-if (!has_role("Admin")) {
-    flash("You don't have permission to view this page", "warning");
-    redirect("home.php");
+    redirect("my_teams.php");
+}
+
+$db = getDB();
+if (isset($_GET["remove"])) {
+    $query = "DELETE FROM `UserTeams`";
+    try {
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+        flash("All teams removed", "success");
+    } catch (PDOException $e) {
+        error_log("Error removing all teams: " . var_export($e, true));
+        flash("Error removing all teams", "danger");
+    }
+    redirect("my_teams.php");
+}
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["removeTeamId"])) {
+    $removeTeamId = $_POST["removeTeamId"];
+    $query = "DELETE FROM `UserTeams` WHERE team_id = :team_id";
+    $params = [":team_id" => $removeTeamId];
+    try {
+        $stmt = $db->prepare($query);
+        $stmt->execute($params);
+        flash("Team selected removed successfully", "success");
+        redirect("admin/team_associations.php");
+    } catch (PDOException $e) {
+        error_log("Error removing team: " . $e->getMessage());
+        flash("Error removing team", "danger");
+    }
 }
 
 // Build search form
@@ -15,9 +53,15 @@ $form = [
     ["type" => "number", "name" => "limit", "label" => "Limit", "value" => "10", "include_margin" => false]
 ];
 
-$total_records = get_total_count("`NBA_Teams`");
-$query = "SELECT id, name, city, nickname, logo FROM `NBA_Teams` WHERE 1=1";
-$params = [];
+$total_records = get_total_count("`NBA_Teams` t
+JOIN `UserTeams` ut ON t.id = ut.team_id
+WHERE ut.user_id = :user_id", [":user_id" => get_user_id()]);
+
+$query = "SELECT t.id AS team_id, name, city, nickname, logo, user_id FROM `NBA_Teams` t
+JOIN `UserTeams` utt ON t.id = utt.team_id 
+WHERE utt.user_id = :user_id";
+
+$params = [":user_id" => get_user_id()];
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
 if ($is_clear) {
@@ -43,7 +87,6 @@ if (count($_GET) > 0) {
             $form[$k]["value"] = $_GET[$v["name"]];
         }
     }
-
     // Filter by team name
     $name = se($_GET, "name", "", false);
     if (!empty($name)) {
@@ -95,18 +138,30 @@ try {
     flash("Unhandled error occurred", "danger");
 }
 
+foreach ($results as $index => $teamData) {
+    foreach ($teamData as $key => $value) {
+        if (is_null($value)) {
+            $results[$index][$key] = "N/A";
+        }
+    }
+}
+
 $table = [
     "data" => $results,
     "title" => "NBA Teams",
     "ignored_columns" => ["team_id"],["user_id"], // mmt 4/17/2024
     // Add edit and delete URLs if needed
-    "edit_url" => get_url("admin/edit_teams.php"),
-    "delete_url" => get_url("admin/delete_teams.php"),
-    "view_url" => get_url("admin/view_team.php")
+   // "edit_url" => get_url("edit_teams.php"),
+   // "delete_url" => get_url("delete_teams.php"),
+    "view_url" => get_url("team.php"),
+    "removeButton" => true
 ];
 ?>
 <div class="container-fluid">
-    <h3>List NBA Teams</h3>
+    <h3>My Favorite Teams</h3>
+    <div>
+        <a href="?remove" onclick="confirm('Are you sure')?'':event.preventDefault()" class="btn btn-danger">Remove All Teams</a>
+    </div>
     <form method="GET">
         <div class="row mb-3" style="align-items: flex-end;">
             <?php foreach ($form as $k => $v) : ?>
@@ -116,10 +171,19 @@ $table = [
             <?php endforeach; ?>
         </div>
         <?php render_button(["text" => "Search", "type" => "submit", "text" => "Filter"]); ?>
+        <?php render_result_counts(count($results), $total_records); ?>
         <a href="?clear" class="btn btn-secondary">Clear</a>
+        <?php if (isset($userData["username"])) : ?>
+            <div class="card-header">
+                Owned By: <?php se($userData, "username", "N/A"); ?>
+            </div>
+        <?php endif; ?>
     </form> <!-- mmt 4/17/2024 -->
-    <?php render_result_counts(count($results), $total_records); ?>
     <?php render_table($table); ?>
+    <div class = "row">
+    <?php foreach($results as $teamData):?>
+        <div class = "col"></div>
+        <?php endforeach;?>
 </div>
 
-<?php require_once(__DIR__ . "/../../../partials/flash.php"); ?>
+<?php require_once(__DIR__ . "/../../partials/flash.php"); ?>

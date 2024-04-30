@@ -1,10 +1,5 @@
 <?php
-require(__DIR__ . "/../../../partials/nav.php"); // mmt 4/17/2024
-
-if (!has_role("Admin")) {
-    flash("You don't have permission to view this page", "warning");
-    redirect("home.php");
-}
+require(__DIR__ . "/../../partials/nav.php"); // mmt 4/17/2024
 
 // Build search form
 $form = [
@@ -14,9 +9,11 @@ $form = [
     ["type" => "text", "name" => "logo", "placeholder" => "Logo (Link)", "label" => "Logo (Link)", "include_margin" => false],
     ["type" => "number", "name" => "limit", "label" => "Limit", "value" => "10", "include_margin" => false]
 ];
+$total_records = get_total_count("`NBA_Teams` t WHERE t.id NOT IN (SELECT team_id FROM `UserTeams`)");
 
-$total_records = get_total_count("`NBA_Teams`");
-$query = "SELECT id, name, city, nickname, logo FROM `NBA_Teams` WHERE 1=1";
+$query = "SELECT t.id, name, city, nickname, logo FROM `NBA_Teams` t
+WHERE t.id NOT IN (SELECT team_id FROM `UserTeams`)";
+
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
@@ -100,13 +97,13 @@ $table = [
     "title" => "NBA Teams",
     "ignored_columns" => ["team_id"],["user_id"], // mmt 4/17/2024
     // Add edit and delete URLs if needed
-    "edit_url" => get_url("admin/edit_teams.php"),
-    "delete_url" => get_url("admin/delete_teams.php"),
-    "view_url" => get_url("admin/view_team.php")
+   // "edit_url" => get_url("edit_teams.php"),
+   // "delete_url" => get_url("delete_teams.php"),
+    "view_url" => get_url("team.php")
 ];
 ?>
 <div class="container-fluid">
-    <h3>List NBA Teams</h3>
+    <h3>Available Teams</h3>
     <form method="GET">
         <div class="row mb-3" style="align-items: flex-end;">
             <?php foreach ($form as $k => $v) : ?>
@@ -114,12 +111,22 @@ $table = [
                     <?php render_input($v); ?>
                 </div>
             <?php endforeach; ?>
+            <?php if (isset($userData["username"])) : ?>
+            <div class="card-header">
+                Owned By: <?php se($userData, "username", "N/A"); ?>
+            </div>
+        <?php endif; ?>
         </div>
+        <?php render_result_counts(count($results), $total_records); ?>
         <?php render_button(["text" => "Search", "type" => "submit", "text" => "Filter"]); ?>
         <a href="?clear" class="btn btn-secondary">Clear</a>
     </form> <!-- mmt 4/17/2024 -->
-    <?php render_result_counts(count($results), $total_records); ?>
+    
     <?php render_table($table); ?>
+    <div class = "row">
+    <?php foreach($results as $teamData):?>
+        <div class = "col"></div>
+        <?php endforeach;?>
 </div>
 
-<?php require_once(__DIR__ . "/../../../partials/flash.php"); ?>
+<?php require_once(__DIR__ . "/../../partials/flash.php"); ?>
