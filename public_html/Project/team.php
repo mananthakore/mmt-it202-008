@@ -3,7 +3,7 @@
 require(__DIR__ . "/../../partials/nav.php"); // mmt 4/17/2024
 
 
-$id = se($_GET, "id", -1, false);
+$id = se($_GET, "team_id", -1, false);
 
 $teamData=[];
 if($id>-1){
