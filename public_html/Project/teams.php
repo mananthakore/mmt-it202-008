@@ -99,7 +99,8 @@ $table = [
     // Add edit and delete URLs if needed
    // "edit_url" => get_url("edit_teams.php"),
    // "delete_url" => get_url("delete_teams.php"),
-    "view_url" => get_url("team.php")
+    "view_url" => get_url("team.php"),
+    "primary_key" => "id"
 ];
 ?>
 <div class="container-fluid">
