@@ -1,7 +1,7 @@
 <?php
-require(__DIR__ . "/../../partials/nav.php"); // mmt 4/17/2024
+require(__DIR__ . "/../../partials/nav.php"); // mmt 4/30/2024
 $db = getDB();
-//remove all associations
+
 if (isset($_GET["remove"])) {
     $query = "DELETE FROM `UserTeams` WHERE user_id = :user_id";
     try {
@@ -31,7 +31,7 @@ if (isset($_GET["remove"])) {
 }
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["removeTeamId"])) {
     $removeTeamId = $_POST["removeTeamId"];
-    $query = "DELETE FROM `UserTeams` WHERE team_id = :team_id";
+    $query = "DELETE FROM `UserTeams` WHERE team_id = :team_id"; // mmt 4/30/24
     $params = [":team_id" => $removeTeamId];
     try {
         $stmt = $db->prepare($query);
@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["removeTeamId"])) {
     }
 }
 
-// Build search form
+
 $form = [
     ["type" => "text", "name" => "name", "placeholder" => "Team Name", "label" => "Team Name", "include_margin" => false],
     ["type" => "text", "name" => "city", "placeholder" => "City", "label" => "City", "include_margin" => false],
@@ -72,7 +72,7 @@ if ($is_clear) {
     $session_data = session_load($session_key);
 }
 
-if (count($_GET) == 0 && isset($session_data) && count($session_data) > 0) { // mmt 4/17/2024
+if (count($_GET) == 0 && isset($session_data) && count($session_data) > 0) { // mmt 4/30/2024
     if ($session_data) {
         $_GET = $session_data;
     }
@@ -87,35 +87,35 @@ if (count($_GET) > 0) {
             $form[$k]["value"] = $_GET[$v["name"]];
         }
     }
-    // Filter by team name
+    
     $name = se($_GET, "name", "", false);
     if (!empty($name)) {
         $query .= " AND name LIKE :name";
         $params[":name"] = "%$name%";
     }
 
-    // Filter by city
+    
     $city = se($_GET, "city", "", false);
     if (!empty($city)) {
         $query .= " AND city LIKE :city";
         $params[":city"] = "%$city%";
     }
 
-    // Filter by nickname
+   
     $nickname = se($_GET, "nickname", "", false);
-    if (!empty($nickname)) { // mmt 4/17/2024
+    if (!empty($nickname)) { // mmt 4/30/2024
         $query .= " AND nickname LIKE :nickname";
         $params[":nickname"] = "%$nickname%";
     }
 
-    // Filter by logo (link)
+   
     $logo = se($_GET, "logo", "", false);
     if (!empty($logo)) {
         $query .= " AND logo LIKE :logo";
         $params[":logo"] = "%$logo%";
     }
     try {
-        $limit = (int)se($_GET, "limit", "10", false);
+        $limit = (int)se($_GET, "limit", "10", false); // mmt 4/30/2024
     } catch (Exception $e) {
         $limit = 10;
     }
@@ -149,7 +149,7 @@ foreach ($results as $index => $teamData) {
 $table = [
     "data" => $results,
     "title" => "NBA Teams",
-    "ignored_columns" => ["team_id"],["user_id"], // mmt 4/17/2024
+    "ignored_columns" => ["team_id"],["user_id"], // mmt 4/30/2024
     // Add edit and delete URLs if needed
    // "edit_url" => get_url("edit_teams.php"),
    // "delete_url" => get_url("delete_teams.php"),
@@ -179,7 +179,7 @@ $table = [
                 Owned By: <?php se($userData, "username", "N/A"); ?>
             </div>
         <?php endif; ?>
-    </form> <!-- mmt 4/17/2024 -->
+    </form> <!-- mmt 4/30/2024 -->
     <?php render_table($table); ?>
     <div class = "row">
     <?php foreach($results as $teamData):?>
