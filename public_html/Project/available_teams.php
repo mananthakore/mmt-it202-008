@@ -1,5 +1,5 @@
 <?php
-require(__DIR__ . "/../../partials/nav.php"); // mmt 4/17/2024
+require(__DIR__ . "/../../partials/nav.php"); // mmt 4/29/2024
 
 // Build search form
 $form = [
@@ -25,7 +25,7 @@ if ($is_clear) {
     $session_data = session_load($session_key);
 }
 
-if (count($_GET) == 0 && isset($session_data) && count($session_data) > 0) { // mmt 4/17/2024
+if (count($_GET) == 0 && isset($session_data) && count($session_data) > 0) { // mmt 4/29/2024
     if ($session_data) {
         $_GET = $session_data;
     }
@@ -57,7 +57,7 @@ if (count($_GET) > 0) {
 
     // Filter by nickname
     $nickname = se($_GET, "nickname", "", false);
-    if (!empty($nickname)) { // mmt 4/17/2024
+    if (!empty($nickname)) { // mmt 4/29/2024
         $query .= " AND nickname LIKE :nickname";
         $params[":nickname"] = "%$nickname%";
     }
@@ -95,7 +95,7 @@ try {
 $table = [
     "data" => $results,
     "title" => "NBA Teams",
-    "ignored_columns" => ["team_id"],["user_id"], // mmt 4/17/2024
+    "ignored_columns" => ["team_id"],["user_id"], // mmt 4/29/2024
     // Add edit and delete URLs if needed
    // "edit_url" => get_url("edit_teams.php"),
    // "delete_url" => get_url("delete_teams.php"),
@@ -121,7 +121,7 @@ $table = [
         <?php render_result_counts(count($results), $total_records); ?>
         <?php render_button(["text" => "Search", "type" => "submit", "text" => "Filter"]); ?>
         <a href="?clear" class="btn btn-secondary">Clear</a>
-    </form> <!-- mmt 4/17/2024 -->
+    </form> <!-- mmt 4/30/2024 -->
     
     <?php render_table($table); ?>
     <div class = "row">

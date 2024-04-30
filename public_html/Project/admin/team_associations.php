@@ -1,5 +1,5 @@
 <?php
-require(__DIR__ . "/../../../partials/nav.php"); // mmt 4/17/2024
+require(__DIR__ . "/../../../partials/nav.php"); // mmt 4/29/2024
 
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["removeTeamId"])) {
     try {
         $stmt = $db->prepare($query);
         $stmt->execute($params);
-        flash("Team selected removed successfully", "success");
+        flash("Team selected removed successfully", "success"); // mmt 4/29/24
         redirect("admin/team_associations.php");
     } catch (PDOException $e) {
         error_log("Error removing team: " . $e->getMessage());
@@ -51,7 +51,7 @@ JOIN `UserTeams` ut ON t.id = ut.team_id");
 //JOIN `UserTeams` ut ON t.id = ut.team_id JOIN Users u ON u.id = ut.user_id WHERE ut.is_active = 1";
 
 $query = "SELECT 
-    t.id AS team_id,
+    t.id AS team_id, 
     name, 
     city, 
     nickname, 
@@ -66,7 +66,7 @@ $query = "SELECT
 
 
 $params = [];
-$session_key = $_SERVER["SCRIPT_NAME"];
+$session_key = $_SERVER["SCRIPT_NAME"]; // mmt 4/29/24
 $is_clear = isset($_GET["clear"]);
 if ($is_clear) {
     session_delete($session_key);
@@ -76,7 +76,7 @@ if ($is_clear) {
     $session_data = session_load($session_key);
 }
 
-if (count($_GET) == 0 && isset($session_data) && count($session_data) > 0) { // mmt 4/17/2024
+if (count($_GET) == 0 && isset($session_data) && count($session_data) > 0) { 
     if ($session_data) {
         $_GET = $session_data;
     }
@@ -96,7 +96,7 @@ if (count($_GET) > 0) {
     $username = se($_GET, "username", "", false);
     if (!empty($username)) {
         $query .= " AND u.username LIKE :username";
-        $params[":username"] = "%$username%";
+        $params[":username"] = "%$username%"; // mmt 4/29/24
     }
 
     // Filter by team name
@@ -117,7 +117,7 @@ if (count($_GET) > 0) {
     $nickname = se($_GET, "nickname", "", false);
     if (!empty($nickname)) { // mmt 4/17/2024
         $query .= " AND nickname LIKE :nickname";
-        $params[":nickname"] = "%$nickname%";
+        $params[":nickname"] = "%$nickname%"; // mmt 4/29/24
     }
 
     // Filter by logo (link)
@@ -146,7 +146,7 @@ try {
         $results = $r;
     }
 } catch (PDOException $e) {
-    error_log("Error fetching NBA teams: " . var_export($e, true));
+    error_log("Error fetching NBA teams: " . var_export($e, true)); // mmt 4/29/24
     flash("Unhandled error occurred", "danger");
 }
 
@@ -168,7 +168,7 @@ $table = [
     "view_url" => get_url("team.php"),
     "removeButton" => true,
     "profile_link" => true,
-    "primary_key" => "team_id",
+    "primary_key" => "team_id", // mmt 4/29/24
     "columns" => [
         ["title" => "username", "key" => "username"],
         ["title" => "name", "key" => "name"],
@@ -195,7 +195,7 @@ $table = [
         <?php render_button(["text" => "Search", "type" => "submit", "text" => "Filter"]); ?>
         <?php render_result_counts(count($results), $total_records); ?>
         <a href="?clear" class="btn btn-secondary">Clear</a>
-    </form> <!-- mmt 4/17/2024 -->
+    </form> <!-- mmt 4/29/2024 -->
     <?php render_table($table); ?>
     <div>
             <a href="<?php echo get_url('remove_filtered.php?' . http_build_query($_GET)); ?>" class="btn btn-danger">Remove Filtered Team Associations</a>
