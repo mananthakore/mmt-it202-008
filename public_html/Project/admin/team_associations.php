@@ -168,6 +168,7 @@ $table = [
     "view_url" => get_url("team.php"),
     "removeButton" => true,
     "profile_link" => true,
+    "primary_key" => "team_id",
     "columns" => [
         ["title" => "username", "key" => "username"],
         ["title" => "name", "key" => "name"],
